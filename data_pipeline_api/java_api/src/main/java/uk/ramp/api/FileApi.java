@@ -65,8 +65,8 @@ public class FileApi implements AutoCloseable {
    * @param query input query
    */
   public FileChannel openForRead(MetadataItem query) throws IOException {
-    var overridenQuery = overridesApplier.applyReadOverrides(query);
-    var metaDataItem = metadataSelector.find(overridenQuery);
+    var overriddenQuery = overridesApplier.applyReadOverrides(query);
+    var metaDataItem = metadataSelector.find(overriddenQuery);
     var filename = metaDataItem.filename().orElseThrow();
     var normalisedFilename = fileDirectoryNormaliser.normalisePath(filename);
     accessLogger.logRead(query, metaDataItem);
@@ -81,12 +81,12 @@ public class FileApi implements AutoCloseable {
    * @param query input query
    */
   public FileChannel openForWrite(MetadataItem query) throws IOException {
-    var overridenQuery = overridesApplier.applyWriteOverrides(query);
-    var filename = overridenQuery.filename().orElseThrow();
+    var overriddenQuery = overridesApplier.applyWriteOverrides(query);
+    var filename = overriddenQuery.filename().orElseThrow();
     var normalisedFilename = fileDirectoryNormaliser.normalisePath(filename);
     Files.createDirectories(Path.of(fileDirectoryNormaliser.parentPath()));
     Files.createFile(Path.of(normalisedFilename));
-    accessLogger.logWrite(query, overridenQuery);
+    accessLogger.logWrite(query, overriddenQuery);
     return FileChannel.open(Path.of(normalisedFilename), WRITE);
   }
 

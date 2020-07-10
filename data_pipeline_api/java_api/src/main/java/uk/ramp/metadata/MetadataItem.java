@@ -57,11 +57,11 @@ public interface MetadataItem {
             .flatMap(Optional::stream)
             .collect(Collectors.toList());
 
-    MetadataItem overridenMetadataItem = ImmutableMetadataItem.copyOf(this);
+    MetadataItem overriddenMetadataItem = ImmutableMetadataItem.copyOf(this);
     for (MetadataItem override : overridesToApply) {
-      overridenMetadataItem = applyOverride(overridenMetadataItem, override);
+      overriddenMetadataItem = applyOverride(overriddenMetadataItem, override);
     }
-    return overridenMetadataItem;
+    return overriddenMetadataItem;
   }
 
   private MetadataItem applyOverride(MetadataItem baseMetadata, MetadataItem metadataOverride) {
