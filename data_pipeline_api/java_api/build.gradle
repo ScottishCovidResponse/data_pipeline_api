@@ -20,7 +20,9 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.16.1'
     implementation "org.immutables:value-annotations:2.8.8"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.1'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.11.1'
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.11.1'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
     testAnnotationProcessor "org.immutables:value:2.8.8"
 
 }
