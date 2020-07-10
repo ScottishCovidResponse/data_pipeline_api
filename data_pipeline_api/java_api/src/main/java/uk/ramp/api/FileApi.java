@@ -17,10 +17,8 @@ import uk.ramp.config.Config;
 import uk.ramp.config.ConfigFactory;
 import uk.ramp.file.CleanableFileChannel;
 import uk.ramp.file.FileDirectoryNormaliser;
-import uk.ramp.file.FileReader;
 import uk.ramp.hash.HashMetadataAppender;
 import uk.ramp.hash.Hasher;
-import uk.ramp.hash.HasherFactory;
 import uk.ramp.metadata.MetadataItem;
 import uk.ramp.metadata.MetadataSelector;
 import uk.ramp.metadata.MetadataSelectorFactory;
@@ -52,31 +50,20 @@ public class FileApi implements AutoCloseable {
 
   FileApi(Clock clock, Path parentPath) {
     var openTimestamp = clock.instant();
-    var hasherFactory = new HasherFactory();
+    var hasher = new Hasher();
     this.fileDirectoryNormaliser = new FileDirectoryNormaliser(parentPath.toString());
     var config =
         new ConfigFactory()
-            .config(
-                new YamlFactory().yamlReader(),
-                hasherFactory,
-                new FileReader(),
-                openTimestamp,
-                fileDirectoryNormaliser);
+            .config(new YamlFactory().yamlReader(), hasher, openTimestamp, fileDirectoryNormaliser);
     this.overridesApplier = new OverridesApplier(config);
     this.accessLoggerWrapper =
         new CleanableAccessLogger(
-            new AccessLoggerFactory(),
-            config,
-            new YamlFactory(),
-            clock,
-            openTimestamp,
-            hasherFactory.fileHasher(new FileReader()));
+            new AccessLoggerFactory(), config, new YamlFactory(), clock, openTimestamp, hasher);
     this.cleanable = cleaner.register(this, accessLoggerWrapper);
     this.metadataSelector =
         new MetadataSelectorFactory()
             .metadataSelector(new YamlFactory().yamlReader(), fileDirectoryNormaliser);
-    this.hashMetadataAppender =
-        new HashMetadataAppender(hasherFactory.fileHasher(new FileReader()));
+    this.hashMetadataAppender = new HashMetadataAppender(hasher);
     this.failOnHashMismatch = config.failOnHashMisMatch().orElse(true);
   }
 

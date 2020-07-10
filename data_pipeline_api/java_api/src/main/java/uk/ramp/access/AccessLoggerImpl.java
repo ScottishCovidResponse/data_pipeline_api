@@ -49,7 +49,7 @@ class AccessLoggerImpl implements AccessLogger {
     var writtenFilePath =
         Path.of(config.parentPath().orElseThrow(), writeMetadata.filename().orElseThrow())
             .toString();
-    var newHash = hasher.hash(writtenFilePath);
+    var newHash = hasher.fileHash(writtenFilePath);
     var overrideWriteMetadata =
         ImmutableMetadataItem.copyOf(writeMetadata).withCalculatedHash(newHash);
     var accessEntry =

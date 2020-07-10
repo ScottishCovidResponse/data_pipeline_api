@@ -20,11 +20,10 @@ public class HashMetadataAppenderTest {
   public void testOpenForRead() {
     var query = ImmutableMetadataItem.builder().filename("file1").verifiedHash("hash1").build();
 
-    when(hasher.hash("file1")).thenReturn("hash1");
+    when(hasher.fileHash("file1")).thenReturn("hash1");
 
-    var hashVerificationFileApi = new HashMetadataAppender(hasher);
+    var hashAppender = new HashMetadataAppender(hasher);
 
-    assertThat(hashVerificationFileApi.addHash(query, true))
-        .isEqualTo(query.withCalculatedHash("hash1"));
+    assertThat(hashAppender.addHash(query, true)).isEqualTo(query.withCalculatedHash("hash1"));
   }
 }

@@ -61,7 +61,7 @@ public class AccessLoggerTest {
     when(config.runId()).thenReturn(Optional.of("run id"));
     when(config.dataDirectory()).thenReturn(Optional.of("data directory"));
     when(config.parentPath()).thenReturn(Optional.of("parentPath/"));
-    when(hasher.hash(any())).thenReturn("hash");
+    when(hasher.fileHash(any())).thenReturn("hash");
   }
 
   @Test

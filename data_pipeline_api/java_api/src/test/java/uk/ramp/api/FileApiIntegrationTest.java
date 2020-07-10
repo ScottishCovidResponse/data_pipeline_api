@@ -10,8 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ramp.file.FileReader;
-import uk.ramp.hash.HasherFactory;
+import uk.ramp.hash.Hasher;
 import uk.ramp.metadata.ImmutableMetadataItem;
 
 public class FileApiIntegrationTest {
@@ -66,7 +65,7 @@ public class FileApiIntegrationTest {
     fileHandle.close();
     fileApi.close();
 
-    var calculatedHash = new HasherFactory().fileHasher(new FileReader()).hash(writeFilePath);
+    var calculatedHash = new Hasher().fileHash(writeFilePath);
 
     assertThat(Files.readString(Path.of(parentPath, "access-runId.yaml")))
         .contains(String.format("calculatedHash: \"%s\"", calculatedHash));
