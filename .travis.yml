@@ -50,7 +50,7 @@ matrix:
       script: "./gradlew build"
       after_success: "./gradlew publish"
       on:
-        branch: master
+        head_branch: master
 
     - name: 'Java API build'
       before_script:
@@ -58,4 +58,6 @@ matrix:
       jdk: openjdk11
       language: java
       script: "./gradlew build"
+      on:
+        NOT head_branch: master
 
