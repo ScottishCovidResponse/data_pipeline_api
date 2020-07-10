@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id "com.diffplug.gradle.spotless" version "4.4.0"
+    id "maven-publish"
 }
 
 group 'uk.ramp'
@@ -27,5 +28,23 @@ dependencies {
 spotless {
     java {
         googleJavaFormat()
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/scottishcovidresponse/data_pipeline_api")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("JAVA_API_PUBLISH_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("JAVA_API_PUBLISH_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
     }
 }
