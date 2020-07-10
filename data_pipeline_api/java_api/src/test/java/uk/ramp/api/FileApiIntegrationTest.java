@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ramp.file.FileReader;
+import uk.ramp.hash.HasherFactory;
 import uk.ramp.metadata.ImmutableMetadataItem;
 
 public class FileApiIntegrationTest {
@@ -43,7 +45,7 @@ public class FileApiIntegrationTest {
   }
 
   @Test
-  public void close() throws IOException {
+  public void testClose() throws IOException {
     FileApi api = new FileApi(Path.of(parentPath));
     api.close();
     assertThat(Files.readString(Path.of(parentPath, "access-runId.yaml")))
@@ -51,5 +53,34 @@ public class FileApiIntegrationTest {
         .contains("close_timestamp")
         .contains("run_id")
         .contains("io");
+  }
+
+  @Test
+  public void testWriteNewHash() throws IOException {
+    var writeFilePath = Path.of(parentPath, "exampleWrite.toml").toString();
+    var query = ImmutableMetadataItem.builder().filename("exampleWrite.toml").build();
+    var buffer = ByteBuffer.allocate(16).put("testWrite".getBytes()).flip();
+    FileApi fileApi = new FileApi(Path.of(parentPath));
+    var fileHandle = fileApi.openForWrite(query);
+    fileHandle.write(buffer);
+    fileHandle.close();
+    fileApi.close();
+
+    var calculatedHash = new HasherFactory().fileHasher(new FileReader()).hash(writeFilePath);
+
+    assertThat(Files.readString(Path.of(parentPath, "access-runId.yaml")))
+        .contains(String.format("calculatedHash: \"%s\"", calculatedHash));
+  }
+
+  @Test
+  public void testNoIOIfFileHandleNotClosed() throws IOException {
+    var query = ImmutableMetadataItem.builder().filename("exampleWrite.toml").build();
+    var buffer = ByteBuffer.allocate(16).put("testWrite".getBytes()).flip();
+    FileApi fileApi = new FileApi(Path.of(parentPath));
+    var fileHandle = fileApi.openForWrite(query);
+    fileHandle.write(buffer);
+    fileApi.close();
+
+    assertThat(Files.readString(Path.of(parentPath, "access-runId.yaml"))).contains("io: []");
   }
 }

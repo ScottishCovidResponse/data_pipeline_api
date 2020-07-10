@@ -4,15 +4,22 @@ import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 import java.io.IOException;
+import java.lang.ref.Cleaner;
+import java.lang.ref.Cleaner.Cleanable;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
+import java.time.Instant;
 import uk.ramp.access.AccessLogger;
 import uk.ramp.access.AccessLoggerFactory;
+import uk.ramp.config.Config;
 import uk.ramp.config.ConfigFactory;
+import uk.ramp.file.CleanableFileChannel;
 import uk.ramp.file.FileDirectoryNormaliser;
 import uk.ramp.file.FileReader;
+import uk.ramp.hash.HashMetadataAppender;
+import uk.ramp.hash.Hasher;
 import uk.ramp.hash.HasherFactory;
 import uk.ramp.metadata.MetadataItem;
 import uk.ramp.metadata.MetadataSelector;
@@ -20,41 +27,80 @@ import uk.ramp.metadata.MetadataSelectorFactory;
 import uk.ramp.overrides.OverridesApplier;
 import uk.ramp.yaml.YamlFactory;
 
-/** Java implementation of Data Pipeline File API. */
+/**
+ * Java implementation of Data Pipeline File API.
+ *
+ * <p>Users should initialise this library using a try-with-resources block or ensure that .close()
+ * is explicitly closed when the required file handles have been accessed.
+ *
+ * <p>As a safety net, .close() is called by a cleaner when the instance of FileApi is being
+ * collected by the GC.
+ */
 public class FileApi implements AutoCloseable {
+  private static final Cleaner cleaner = Cleaner.create(); // safety net for closing
+  private final Cleanable cleanable;
   private final MetadataSelector metadataSelector;
-  private final AccessLogger accessLogger;
+  private final CleanableAccessLogger accessLoggerWrapper;
   private final OverridesApplier overridesApplier;
   private final FileDirectoryNormaliser fileDirectoryNormaliser;
+  private final HashMetadataAppender hashMetadataAppender;
+  private final boolean failOnHashMismatch;
 
   public FileApi(Path configFolderPath) {
     this(Clock.systemUTC(), configFolderPath);
   }
 
   FileApi(Clock clock, Path parentPath) {
-    var hasherFactory = new HasherFactory();
-    var metadataSelectorFactory = new MetadataSelectorFactory();
-    var configFactory = new ConfigFactory();
-    var accessLoggerFactory = new AccessLoggerFactory();
-    var yamlFactory = new YamlFactory();
     var openTimestamp = clock.instant();
+    var hasherFactory = new HasherFactory();
     this.fileDirectoryNormaliser = new FileDirectoryNormaliser(parentPath.toString());
     var config =
-        configFactory.config(
-            yamlFactory.yamlReader(),
-            hasherFactory,
-            new FileReader(),
-            openTimestamp,
-            fileDirectoryNormaliser);
+        new ConfigFactory()
+            .config(
+                new YamlFactory().yamlReader(),
+                hasherFactory,
+                new FileReader(),
+                openTimestamp,
+                fileDirectoryNormaliser);
     this.overridesApplier = new OverridesApplier(config);
-    this.accessLogger =
-        accessLoggerFactory.accessLogger(config, yamlFactory.yamlWriter(), clock, openTimestamp);
+    this.accessLoggerWrapper =
+        new CleanableAccessLogger(
+            new AccessLoggerFactory(),
+            config,
+            new YamlFactory(),
+            clock,
+            openTimestamp,
+            hasherFactory.fileHasher(new FileReader()));
+    this.cleanable = cleaner.register(this, accessLoggerWrapper);
     this.metadataSelector =
-        metadataSelectorFactory.metadataSelector(
-            hasherFactory.contentsHasher(),
-            yamlFactory.yamlReader(),
-            config.failOnHashMisMatch().orElse(true),
-            fileDirectoryNormaliser);
+        new MetadataSelectorFactory()
+            .metadataSelector(new YamlFactory().yamlReader(), fileDirectoryNormaliser);
+    this.hashMetadataAppender =
+        new HashMetadataAppender(hasherFactory.fileHasher(new FileReader()));
+    this.failOnHashMismatch = config.failOnHashMisMatch().orElse(true);
+  }
+
+  // Defining a resource that requires cleaning
+  private static class CleanableAccessLogger implements Runnable {
+    AccessLogger accessLogger;
+
+    CleanableAccessLogger(
+        AccessLoggerFactory accessLoggerFactory,
+        Config config,
+        YamlFactory yamlFactory,
+        Clock clock,
+        Instant openTimestamp,
+        Hasher hasher) {
+      this.accessLogger =
+          accessLoggerFactory.accessLogger(
+              config, yamlFactory.yamlWriter(), clock, openTimestamp, hasher);
+    }
+
+    // Invoked by close method or cleaner
+    @Override
+    public void run() {
+      accessLogger.writeAccessEntries();
+    }
   }
 
   /**
@@ -64,13 +110,14 @@ public class FileApi implements AutoCloseable {
    * @return FileChannel for input
    * @param query input query
    */
-  public FileChannel openForRead(MetadataItem query) throws IOException {
+  public CleanableFileChannel openForRead(MetadataItem query) throws IOException {
     var overriddenQuery = overridesApplier.applyReadOverrides(query);
     var metaDataItem = metadataSelector.find(overriddenQuery);
-    var filename = metaDataItem.filename().orElseThrow();
-    var normalisedFilename = fileDirectoryNormaliser.normalisePath(filename);
-    accessLogger.logRead(query, metaDataItem);
-    return FileChannel.open(Path.of(normalisedFilename), READ);
+    var normalisedFilename =
+        fileDirectoryNormaliser.normalisePath(metaDataItem.filename().orElseThrow());
+    var hashedMetaDataItem = hashMetadataAppender.addHash(metaDataItem, failOnHashMismatch);
+    accessLoggerWrapper.accessLogger.logRead(query, hashedMetaDataItem);
+    return new CleanableFileChannel(FileChannel.open(Path.of(normalisedFilename), READ), () -> {});
   }
 
   /**
@@ -80,19 +127,24 @@ public class FileApi implements AutoCloseable {
    * @return FileChannel for output
    * @param query input query
    */
-  public FileChannel openForWrite(MetadataItem query) throws IOException {
+  public CleanableFileChannel openForWrite(MetadataItem query) throws IOException {
     var overriddenQuery = overridesApplier.applyWriteOverrides(query);
     var filename = overriddenQuery.filename().orElseThrow();
     var normalisedFilename = fileDirectoryNormaliser.normalisePath(filename);
     Files.createDirectories(Path.of(fileDirectoryNormaliser.parentPath()));
     Files.createFile(Path.of(normalisedFilename));
-    accessLogger.logWrite(query, overriddenQuery);
-    return FileChannel.open(Path.of(normalisedFilename), WRITE);
+    Runnable onClose = () -> executeOnCloseFileHandle(query, overriddenQuery);
+    return new CleanableFileChannel(FileChannel.open(Path.of(normalisedFilename), WRITE), onClose);
+  }
+
+  private void executeOnCloseFileHandle(MetadataItem queryMeta, MetadataItem accessedMeta) {
+    var hashedAccessedMeta = hashMetadataAppender.addHash(accessedMeta, false);
+    accessLoggerWrapper.accessLogger.logWrite(queryMeta, hashedAccessedMeta);
   }
 
   /** Close the session and write the access log. */
   @Override
   public void close() {
-    accessLogger.writeAccessEntries();
+    cleanable.clean();
   }
 }

@@ -1,4 +1,4 @@
-package uk.ramp.metadata;
+package uk.ramp.hash;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -6,15 +6,13 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import uk.ramp.hash.Hasher;
+import uk.ramp.metadata.ImmutableMetadataItem;
 
-public class HashVerificationMetadataSelectorTest {
-  private MetadataSelector metadataSelector;
+public class HashMetadataAppenderTest {
   private Hasher hasher;
 
   @Before
   public void setUp() {
-    this.metadataSelector = mock(MetadataSelector.class);
     this.hasher = mock(Hasher.class);
   }
 
@@ -22,12 +20,11 @@ public class HashVerificationMetadataSelectorTest {
   public void testOpenForRead() {
     var query = ImmutableMetadataItem.builder().filename("file1").verifiedHash("hash1").build();
 
-    when(metadataSelector.find(query)).thenReturn(query);
     when(hasher.hash("file1")).thenReturn("hash1");
 
-    var hashVerificationFileApi =
-        new HashVerificationMetadataSelector(metadataSelector, hasher, true);
+    var hashVerificationFileApi = new HashMetadataAppender(hasher);
 
-    assertThat(hashVerificationFileApi.find(query)).isEqualTo(query.withCalculatedHash("hash1"));
+    assertThat(hashVerificationFileApi.addHash(query, true))
+        .isEqualTo(query.withCalculatedHash("hash1"));
   }
 }

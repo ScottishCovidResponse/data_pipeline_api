@@ -1,9 +1,12 @@
 package uk.ramp.access;
 
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import uk.ramp.config.Config;
+import uk.ramp.hash.Hasher;
+import uk.ramp.metadata.ImmutableMetadataItem;
 import uk.ramp.metadata.MetadataItem;
 
 class AccessLoggerImpl implements AccessLogger {
@@ -12,18 +15,21 @@ class AccessLoggerImpl implements AccessLogger {
   private final Instant openTimestamp;
   private final AccessLogWriter writer;
   private final Config config;
+  private final Hasher hasher;
 
   AccessLoggerImpl(
       List<AccessEntry> accessEntries,
       Clock clock,
       AccessLogWriter writer,
       Config config,
-      Instant openTimestamp) {
+      Instant openTimestamp,
+      Hasher hasher) {
     this.accessEntries = accessEntries;
     this.clock = clock;
     this.openTimestamp = openTimestamp;
     this.writer = writer;
     this.config = config;
+    this.hasher = hasher;
   }
 
   @Override
@@ -40,12 +46,18 @@ class AccessLoggerImpl implements AccessLogger {
 
   @Override
   public void logWrite(MetadataItem callMetadata, MetadataItem writeMetadata) {
+    var writtenFilePath =
+        Path.of(config.parentPath().orElseThrow(), writeMetadata.filename().orElseThrow())
+            .toString();
+    var newHash = hasher.hash(writtenFilePath);
+    var overrideWriteMetadata =
+        ImmutableMetadataItem.copyOf(writeMetadata).withCalculatedHash(newHash);
     var accessEntry =
         ImmutableAccessEntry.builder()
             .type("write")
             .timestamp(clock.instant())
             .callMetadata(callMetadata)
-            .accessMetadata(writeMetadata)
+            .accessMetadata(overrideWriteMetadata)
             .build();
     accessEntries.add(accessEntry);
   }
