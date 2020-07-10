@@ -47,5 +47,5 @@ matrix:
         - "cd data_pipeline_api/java_api"
       jdk: openjdk11
       language: java
-      script: "gradle build"
+      script: "./gradlew build"
 
