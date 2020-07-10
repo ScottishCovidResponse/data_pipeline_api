@@ -43,13 +43,14 @@ matrix:
         - bash <(curl -s https://codecov.io/bash)
 
     - name: 'Java API build and publish'
-      if: branch = master
       before_script:
         - "cd data_pipeline_api/java_api"
       jdk: openjdk11
       language: java
       script: "./gradlew build"
       after_success: "./gradlew publish"
+      on:
+        branch: master
 
     - name: 'Java API build'
       before_script:
