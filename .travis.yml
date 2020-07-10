@@ -49,15 +49,4 @@ matrix:
       language: java
       script: "./gradlew build"
       after_success: "./gradlew publish"
-      on:
-        head_branch: master
-
-    - name: 'Java API build'
-      before_script:
-        - "cd data_pipeline_api/java_api"
-      jdk: openjdk11
-      language: java
-      script: "./gradlew build"
-      on:
-        NOT head_branch: master
 
