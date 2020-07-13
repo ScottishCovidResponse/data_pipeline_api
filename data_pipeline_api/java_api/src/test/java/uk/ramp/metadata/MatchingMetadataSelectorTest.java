@@ -13,14 +13,14 @@ public class MatchingMetadataSelectorTest {
       ImmutableMetadataItem.builder()
           .dataProduct("test")
           .filename("testFileName0")
-          .version("1.0.0")
+          .internalVersion("1.0.0")
           .build();
 
   private final MetadataItem item2 =
       ImmutableMetadataItem.builder()
           .dataProduct("test")
           .filename("testFileName1")
-          .version("2.0.0")
+          .internalVersion("2.0.0")
           .build();
 
   @Before
@@ -51,7 +51,8 @@ public class MatchingMetadataSelectorTest {
     metadataItems = List.of(item1, item2);
     var matchingMetadataSelector = new MatchingMetadataSelector(metadataItems);
 
-    var query = ImmutableMetadataItem.builder().dataProduct("test").version("1.0.0").build();
+    var query =
+        ImmutableMetadataItem.builder().dataProduct("test").internalVersion("1.0.0").build();
     assertThat(matchingMetadataSelector.find(query)).isEqualTo(item1);
   }
 }

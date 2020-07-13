@@ -18,6 +18,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.mockito:mockito-core:2.28.2'
     testImplementation 'org.assertj:assertj-core:3.16.1'
+    compile group: 'org.apache.maven', name: 'maven-artifact', version: '3.6.3'
     implementation "org.immutables:value-annotations:2.8.8"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.1'
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.11.1'

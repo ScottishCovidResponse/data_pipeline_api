@@ -18,8 +18,6 @@ public class ConfigFactory {
     var config = new ConfigReader(yamlReader, normalisedPath).read();
     var freshHash = hasher.fileHash(fileDirectoryNormaliser.normalisePath(LOCATION), openTimestamp);
     var runId = config.runId().orElse(freshHash);
-    return config
-        .withRunId(runId)
-        .withParentPath(fileDirectoryNormaliser.parentPath());
+    return config.withRunId(runId).withParentPath(fileDirectoryNormaliser.parentPath());
   }
 }
