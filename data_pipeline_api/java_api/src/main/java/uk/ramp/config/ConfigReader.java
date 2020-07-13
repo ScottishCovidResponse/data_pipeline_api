@@ -10,13 +10,12 @@ import uk.ramp.reader.Reader;
 import uk.ramp.yaml.YamlReader;
 
 class ConfigReader implements Reader<ImmutableConfig> {
-  private static final String LOCATION = "config.yaml";
 
   private final YamlReader yamlReader;
   private final Path absoluteLocationPath;
 
-  ConfigReader(YamlReader yamlReader, FileDirectoryNormaliser fileDirectoryNormaliser) {
-    this.absoluteLocationPath = Path.of(fileDirectoryNormaliser.normalisePath(LOCATION));
+  ConfigReader(YamlReader yamlReader, Path absoluteLocationPath) {
+    this.absoluteLocationPath = absoluteLocationPath;
     this.yamlReader = yamlReader;
   }
 
