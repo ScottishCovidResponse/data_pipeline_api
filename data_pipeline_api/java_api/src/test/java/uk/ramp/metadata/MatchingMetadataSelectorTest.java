@@ -23,11 +23,6 @@ public class MatchingMetadataSelectorTest {
           .internalVersion("2.0.0")
           .build();
 
-  @Before
-  public void setUp() {
-    metadataItems = List.of();
-  }
-
   @Test
   public void simpleReadTest() {
     metadataItems = List.of(item1);
