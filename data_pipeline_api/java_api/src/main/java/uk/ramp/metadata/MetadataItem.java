@@ -58,7 +58,7 @@ public interface MetadataItem {
             MetadataItem::runId,
             MetadataItem::source)
         .stream()
-        .map(f -> f.andThen(s -> s.orElse("")))
+        .map(func -> func.andThen(s -> s.orElse("")))
         .allMatch(func -> keyIsEitherNotPresentOrEqual(func.apply(key), func.apply(this)));
   }
 
