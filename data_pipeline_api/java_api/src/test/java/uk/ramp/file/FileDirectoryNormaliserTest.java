@@ -14,13 +14,13 @@ public class FileDirectoryNormaliserTest {
   }
 
   @Test
-  public void normaliseRelativePath() {
+  public void normaliseAbsolutePath() {
     var normaliser = new FileDirectoryNormaliser(parentPath);
     assertThat(normaliser.normalisePath("/file.txt")).isEqualTo("/file.txt");
   }
 
   @Test
-  public void normaliseAbsolutePath() {
+  public void normaliseRelativePath() {
     var normaliser = new FileDirectoryNormaliser(parentPath);
 
     assertThat(normaliser.normalisePath("file.txt")).isEqualTo("parentPath/file.txt");
