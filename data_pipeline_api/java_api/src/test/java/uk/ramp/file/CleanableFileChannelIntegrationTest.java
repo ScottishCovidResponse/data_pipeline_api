@@ -60,7 +60,7 @@ public class CleanableFileChannelIntegrationTest {
   }
 
   @Test
-  public void testRead_WithWriteFileHandle() {
+  public void testReadWithWriteFileHandle() {
     var cleanableFileChannel =
         new CleanableFileChannel(fileChannelWritable, () -> runnableExecuted.set(true));
     assertThatExceptionOfType(NonReadableChannelException.class)
@@ -68,7 +68,7 @@ public class CleanableFileChannelIntegrationTest {
   }
 
   @Test
-  public void testWrite_WithReadFileHandle() {
+  public void testWriteWithReadFileHandle() {
     var cleanableFileChannel =
         new CleanableFileChannel(fileChannelReadable, () -> runnableExecuted.set(true));
     assertThatExceptionOfType(NonWritableChannelException.class)

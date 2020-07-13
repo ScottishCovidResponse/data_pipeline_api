@@ -69,7 +69,7 @@ public class FileApi implements AutoCloseable {
 
   // Defining a resource that requires cleaning
   private static class CleanableAccessLogger implements Runnable {
-    AccessLogger accessLogger;
+    private final AccessLogger accessLogger;
 
     CleanableAccessLogger(
         AccessLoggerFactory accessLoggerFactory,

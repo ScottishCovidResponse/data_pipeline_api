@@ -36,8 +36,8 @@ public class CleanableFileChannel
 
   // Defining a resource that requires cleaning
   private static class FileChannelWrapper implements Runnable {
-    FileChannel fileChannel;
-    Runnable runOnClose;
+    private final FileChannel fileChannel;
+    private final Runnable runOnClose;
 
     FileChannelWrapper(FileChannel fileChannel, Runnable runOnClose) {
       this.fileChannel = fileChannel;
