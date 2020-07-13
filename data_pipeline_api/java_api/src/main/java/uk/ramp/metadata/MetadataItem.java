@@ -23,7 +23,7 @@ public interface MetadataItem {
   Optional<String> internalVersion();
 
   @Derived
-  default ArtifactVersion version() {
+  default ArtifactVersion comparableVersion() {
     return internalVersion()
         .map(DefaultArtifactVersion::new)
         .orElse(new DefaultArtifactVersion("0"));

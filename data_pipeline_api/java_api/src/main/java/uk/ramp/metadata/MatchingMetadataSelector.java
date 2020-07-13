@@ -15,7 +15,7 @@ public class MatchingMetadataSelector implements MetadataSelector {
   public MetadataItem find(MetadataItem key) {
     return metadataItems.stream()
         .filter(i -> i.isSuperSetOf(key))
-        .max(comparing(MetadataItem::version))
+        .max(comparing(MetadataItem::comparableVersion))
         .orElse(key);
   }
 }

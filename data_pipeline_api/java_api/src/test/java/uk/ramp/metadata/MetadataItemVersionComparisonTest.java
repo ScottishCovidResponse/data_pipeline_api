@@ -37,8 +37,8 @@ public class MetadataItemVersionComparisonTest {
     var meta1 = ImmutableMetadataItem.builder().internalVersion(v1).build();
     var meta2 = ImmutableMetadataItem.builder().internalVersion(v2).build();
 
-    assertThat(meta1.version()).isLessThan(meta2.version());
-    assertThat(meta1.version().toString()).isEqualTo(v1);
-    assertThat(meta2.version().toString()).isEqualTo(v2);
+    assertThat(meta1.comparableVersion()).isLessThan(meta2.comparableVersion());
+    assertThat(meta1.comparableVersion().toString()).isEqualTo(v1);
+    assertThat(meta2.comparableVersion().toString()).isEqualTo(v2);
   }
 }
