@@ -42,7 +42,7 @@ public class FileApi implements AutoCloseable {
   private final OverridesApplier overridesApplier;
   private final FileDirectoryNormaliser fileDirectoryNormaliser;
   private final HashMetadataAppender hashMetadataAppender;
-  private final boolean failOnHashMismatch;
+  private final boolean shouldVerifyHash;
 
   public FileApi(Path configFolderPath) {
     this(Clock.systemUTC(), configFolderPath);
@@ -64,7 +64,7 @@ public class FileApi implements AutoCloseable {
         new MetadataSelectorFactory()
             .metadataSelector(new YamlFactory().yamlReader(), fileDirectoryNormaliser);
     this.hashMetadataAppender = new HashMetadataAppender(hasher);
-    this.failOnHashMismatch = config.failOnHashMisMatch().orElse(true);
+    this.shouldVerifyHash = config.failOnHashMisMatch();
   }
 
   // Defining a resource that requires cleaning
@@ -102,7 +102,7 @@ public class FileApi implements AutoCloseable {
     var metaDataItem = metadataSelector.find(overriddenQuery);
     var normalisedFilename =
         fileDirectoryNormaliser.normalisePath(metaDataItem.filename().orElseThrow());
-    var hashedMetaDataItem = hashMetadataAppender.addHash(metaDataItem, failOnHashMismatch);
+    var hashedMetaDataItem = hashMetadataAppender.addHash(metaDataItem, shouldVerifyHash);
     accessLoggerWrapper.accessLogger.logRead(query, hashedMetaDataItem);
     return new CleanableFileChannel(FileChannel.open(Path.of(normalisedFilename), READ), () -> {});
   }

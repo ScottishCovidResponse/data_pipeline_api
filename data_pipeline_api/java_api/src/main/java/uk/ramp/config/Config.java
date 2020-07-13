@@ -49,7 +49,12 @@ public interface Config {
   }
 
   @JsonProperty("fail_on_hash_mismatch")
-  Optional<Boolean> failOnHashMisMatch();
+  Optional<Boolean> internalFailOnHashMisMatch();
+
+  @Derived
+  default boolean failOnHashMisMatch() {
+    return internalFailOnHashMisMatch().orElse(true);
+  }
 
   @JsonProperty("read")
   List<ImmutableOverrideItem> readQueryOverrides();
