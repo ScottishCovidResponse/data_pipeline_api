@@ -118,7 +118,7 @@ public class FileApi implements AutoCloseable {
     var overriddenQuery = overridesApplier.applyWriteOverrides(query);
     var filename = overriddenQuery.filename().orElseThrow();
     var normalisedFilename = fileDirectoryNormaliser.normalisePath(filename);
-    Files.createDirectories(Path.of(fileDirectoryNormaliser.parentPath()));
+    Files.createDirectories(Path.of(normalisedFilename).getParent());
     Files.createFile(Path.of(normalisedFilename));
     Runnable onClose = () -> executeOnCloseFileHandle(query, overriddenQuery);
     return new CleanableFileChannel(FileChannel.open(Path.of(normalisedFilename), WRITE), onClose);
