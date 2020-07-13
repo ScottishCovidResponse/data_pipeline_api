@@ -18,7 +18,6 @@ public class OverridesApplier {
   }
 
   public MetadataItem applyWriteOverrides(MetadataItem query) {
-    List<OverrideItem> readOverrides = new ArrayList<>(config.writeQueryOverrides());
     OverrideItem runIdOverride =
         ImmutableOverrideItem.builder()
             .use(ImmutableMetadataItem.builder().runId(config.runId().orElseThrow()).build())
@@ -38,7 +37,7 @@ public class OverridesApplier {
             .build();
 
     return query
-        .applyOverrides(readOverrides)
+        .applyOverrides(new ArrayList<>(config.writeQueryOverrides()))
         .applyOverrides(List.of(runIdOverride))
         .applyOverrides(List.of(filenameOverride));
   }
