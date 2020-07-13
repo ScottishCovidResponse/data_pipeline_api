@@ -69,13 +69,10 @@ public interface MetadataItem {
     return key.equals(otherKey);
   }
 
-  default MetadataItem applyOverrides(List<OverrideItem> readOverrides) {
+  default MetadataItem applyOverrides(List<OverrideItem> overrides) {
     List<MetadataItem> overridesToApply =
-        readOverrides.stream()
-            .filter(
-                readOverrideItem ->
-                    this.isSuperSetOf(
-                        readOverrideItem.where().orElse(ImmutableMetadataItem.copyOf(this))))
+        overrides.stream()
+            .filter(overrideItem -> overrideItem.where().map(this::isSuperSetOf).orElse(true))
             .map(OverrideItem::use)
             .flatMap(Optional::stream)
             .collect(Collectors.toList());
