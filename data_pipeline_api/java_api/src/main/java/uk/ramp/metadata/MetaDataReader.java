@@ -7,10 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import uk.ramp.file.FileDirectoryNormaliser;
-import uk.ramp.reader.Reader;
 import uk.ramp.yaml.YamlReader;
 
-class MetaDataReader implements Reader<List<ImmutableMetadataItem>> {
+class MetaDataReader {
   private static final String LOCATION = "metadata.yaml";
   private final YamlReader yamlReader;
   private final Path absoluteLocationPath;
@@ -20,7 +19,6 @@ class MetaDataReader implements Reader<List<ImmutableMetadataItem>> {
     this.absoluteLocationPath = Path.of(fileDirectoryNormaliser.normalisePath(LOCATION));
   }
 
-  @Override
   public List<ImmutableMetadataItem> read() {
     try {
       return yamlReader.read(

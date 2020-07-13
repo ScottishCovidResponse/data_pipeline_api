@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import uk.ramp.reader.Reader;
 import uk.ramp.yaml.YamlReader;
 
-class ConfigReader implements Reader<ImmutableConfig> {
+class ConfigReader {
 
   private final YamlReader yamlReader;
   private final Path absoluteLocationPath;
@@ -18,7 +17,6 @@ class ConfigReader implements Reader<ImmutableConfig> {
     this.yamlReader = yamlReader;
   }
 
-  @Override
   public ImmutableConfig read() {
     try {
       return yamlReader.read(
