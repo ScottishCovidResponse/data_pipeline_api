@@ -1,6 +1,7 @@
 package uk.ramp.hash;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,5 +26,17 @@ public class HashMetadataAppenderTest {
     var hashAppender = new HashMetadataAppender(hasher);
 
     assertThat(hashAppender.addHash(query, true)).isEqualTo(query.withCalculatedHash("hash1"));
+  }
+
+  @Test
+  public void testInvalidHash() {
+    var query = ImmutableMetadataItem.builder().filename("file1").verifiedHash("hash1").build();
+
+    when(hasher.fileHash("file1")).thenReturn("invalidHash");
+
+    var hashAppender = new HashMetadataAppender(hasher);
+
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> hashAppender.addHash(query, true));
   }
 }
