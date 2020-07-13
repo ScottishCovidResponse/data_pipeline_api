@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import uk.ramp.file.FileDirectoryNormaliser;
 import uk.ramp.reader.Reader;
 import uk.ramp.yaml.YamlReader;
 
