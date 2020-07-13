@@ -42,4 +42,36 @@ public class MetadataItemTest {
     assertThat(meta1.version().toString()).isEqualTo(v1);
     assertThat(meta2.version().toString()).isEqualTo(v2);
   }
+
+  @Test
+  public void testIsSuperSetOfWithEqualFilename() {
+    var meta1 = ImmutableMetadataItem.builder().filename("filename").build();
+    var meta2 = ImmutableMetadataItem.builder().filename("filename").build();
+
+    assertThat(meta1.isSuperSetOf(meta2)).isTrue();
+  }
+
+  @Test
+  public void testIsSuperSetOfWithEqualDataProduct() {
+    var meta1 = ImmutableMetadataItem.builder().dataProduct("dataProduct").build();
+    var meta2 = ImmutableMetadataItem.builder().dataProduct("dataProduct").build();
+
+    assertThat(meta1.isSuperSetOf(meta2)).isTrue();
+  }
+
+  @Test
+  public void testIsSuperSetOfWithEqualExtension() {
+    var meta1 = ImmutableMetadataItem.builder().extension("ext").build();
+    var meta2 = ImmutableMetadataItem.builder().extension("ext").build();
+
+    assertThat(meta1.isSuperSetOf(meta2)).isTrue();
+  }
+
+  @Test
+  public void testIsSuperSetOfWithEqualVersion() {
+    var meta1 = ImmutableMetadataItem.builder().internalVersion("version").build();
+    var meta2 = ImmutableMetadataItem.builder().internalVersion("version").build();
+
+    assertThat(meta1.isSuperSetOf(meta2)).isTrue();
+  }
 }

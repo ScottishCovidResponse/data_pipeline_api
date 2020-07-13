@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -46,15 +47,26 @@ public interface MetadataItem {
   Optional<String> source();
 
   default boolean isSuperSetOf(MetadataItem key) {
-    return key.filename().map(k -> k.equals(filename().orElse(""))).orElse(true)
-        && key.component().map(k -> k.equals(component().orElse(""))).orElse(true)
-        && key.dataProduct().map(k -> k.equals(dataProduct().orElse(""))).orElse(true)
-        && key.internalVersion().map(k -> k.equals(internalVersion().orElse(""))).orElse(true)
-        && key.extension().map(k -> k.equals(extension().orElse(""))).orElse(true)
-        && key.verifiedHash().map(k -> k.equals(verifiedHash().orElse(""))).orElse(true)
-        && key.calculatedHash().map(k -> k.equals(calculatedHash().orElse(""))).orElse(true)
-        && key.runId().map(k -> k.equals(runId().orElse(""))).orElse(true)
-        && key.source().map(k -> k.equals(source().orElse(""))).orElse(true);
+    return List.<Function<MetadataItem, Optional<String>>>of(
+            MetadataItem::filename,
+            MetadataItem::component,
+            MetadataItem::dataProduct,
+            MetadataItem::internalVersion,
+            MetadataItem::extension,
+            MetadataItem::verifiedHash,
+            MetadataItem::calculatedHash,
+            MetadataItem::runId,
+            MetadataItem::source)
+        .stream()
+        .map(f -> f.andThen(s -> s.orElse("")))
+        .allMatch(func -> keyIsEitherNotPresentOrEqual(func.apply(key), func.apply(this)));
+  }
+
+  private boolean keyIsEitherNotPresentOrEqual(String key, String otherKey) {
+    if (key.equals("")) {
+      return true;
+    }
+    return key.equals(otherKey);
   }
 
   default MetadataItem applyOverrides(List<OverrideItem> readOverrides) {
