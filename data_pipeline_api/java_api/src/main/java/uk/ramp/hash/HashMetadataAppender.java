@@ -16,13 +16,9 @@ public class HashMetadataAppender {
       return queryMetaDataItem;
     }
 
-    if (queryMetaDataItem.filename().isEmpty()) {
-      throw new IllegalStateException("Filename not specified. " + queryMetaDataItem);
-    }
-
     var verifiedHash = queryMetaDataItem.verifiedHash().get();
 
-    String calculatedHash = hasher.fileHash(queryMetaDataItem.filename().get());
+    String calculatedHash = hasher.fileHash(queryMetaDataItem.filename().orElseThrow());
 
     if (shouldVerifyHash && !calculatedHash.equals(verifiedHash)) {
       throw new IllegalStateException(
