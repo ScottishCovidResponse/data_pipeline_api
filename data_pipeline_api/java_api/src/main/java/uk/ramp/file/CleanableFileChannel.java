@@ -68,7 +68,7 @@ public class CleanableFileChannel
 
   @Override
   public long read(ByteBuffer[] dsts) throws IOException {
-    return 0;
+    return fileChannelWrapper.fileChannel.read(dsts);
   }
 
   @Override
@@ -92,8 +92,14 @@ public class CleanableFileChannel
   }
 
   @Override
-  public FileChannel position(long newPosition) throws IOException {
-    return fileChannelWrapper.fileChannel.position(newPosition);
+  public CleanableFileChannel position(long newPosition) throws IOException {
+    var fileChannel = fileChannelWrapper.fileChannel.position(newPosition);
+
+    if (fileChannel == null) {
+      return null;
+    }
+
+    return this;
   }
 
   @Override
@@ -102,8 +108,14 @@ public class CleanableFileChannel
   }
 
   @Override
-  public FileChannel truncate(long size) throws IOException {
-    return fileChannelWrapper.fileChannel.truncate(size);
+  public CleanableFileChannel truncate(long size) throws IOException {
+    var fileChannel = fileChannelWrapper.fileChannel.truncate(size);
+
+    if (fileChannel == null) {
+      return null;
+    }
+
+    return this;
   }
 
   public void force(boolean metaData) throws IOException {
