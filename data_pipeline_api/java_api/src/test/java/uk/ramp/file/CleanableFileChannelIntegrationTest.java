@@ -27,9 +27,9 @@ public class CleanableFileChannelIntegrationTest {
     String parentPath =
         Paths.get(getClass().getResource("/config.yaml").toURI()).getParent().toString();
     this.fileChannelReadable =
-        FileChannel.open(Path.of(parentPath, "parameter/example1.toml"), READ);
+        FileChannel.open(Path.of(parentPath, "folder/data/parameter/example1.toml"), READ);
     this.fileChannelWritable =
-        FileChannel.open(Path.of(parentPath, "parameter/example1.toml"), WRITE);
+        FileChannel.open(Path.of(parentPath, "folder/data/parameter/example1.toml"), WRITE);
     runnableExecuted = new AtomicBoolean(false);
   }
 

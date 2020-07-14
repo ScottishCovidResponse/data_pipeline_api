@@ -5,11 +5,11 @@ import java.nio.file.Path;
 public class FileDirectoryNormaliser {
   private final String parentPath;
 
-  public FileDirectoryNormaliser(String parentPath) {
+  FileDirectoryNormaliser(String parentPath) {
     this.parentPath = parentPath;
   }
 
-  public String normalisePath(String path) {
+  String normalisePath(String path) {
     if (Path.of(path).isAbsolute()) {
       return path;
     }
@@ -19,9 +19,5 @@ public class FileDirectoryNormaliser {
 
   public static String normalisePath(String parentPath, String path) {
     return new FileDirectoryNormaliser(parentPath).normalisePath(path);
-  }
-
-  public String parentPath() {
-    return parentPath;
   }
 }

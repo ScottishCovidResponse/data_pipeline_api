@@ -8,8 +8,8 @@ public class MetadataItemTest {
 
   @Test
   public void testIsSuperSetOfWithEqualFilename() {
-    var meta1 = ImmutableMetadataItem.builder().filename("filename").build();
-    var meta2 = ImmutableMetadataItem.builder().filename("filename").build();
+    var meta1 = ImmutableMetadataItem.builder().internalFilename("filename").build();
+    var meta2 = ImmutableMetadataItem.builder().internalFilename("filename").build();
 
     assertThat(meta1.isSuperSetOf(meta2)).isTrue();
   }
@@ -50,7 +50,7 @@ public class MetadataItemTest {
   @Test
   public void testIsSuperSetOfPartialFilename() {
     var queryKey = ImmutableMetadataItem.builder().build();
-    var otherKey = ImmutableMetadataItem.builder().filename("filename").build();
+    var otherKey = ImmutableMetadataItem.builder().internalFilename("filename").build();
 
     assertThat(otherKey.isSuperSetOf(queryKey)).isTrue();
     assertThat(queryKey.isSuperSetOf(otherKey)).isFalse();
@@ -60,7 +60,10 @@ public class MetadataItemTest {
   public void testIsSuperSetOfPartialFilenameAndVersion() {
     var queryKey = ImmutableMetadataItem.builder().build();
     var otherKey =
-        ImmutableMetadataItem.builder().filename("filename").internalVersion("version").build();
+        ImmutableMetadataItem.builder()
+            .internalFilename("filename")
+            .internalVersion("version")
+            .build();
 
     assertThat(otherKey.isSuperSetOf(queryKey)).isTrue();
     assertThat(queryKey.isSuperSetOf(otherKey)).isFalse();
@@ -68,7 +71,7 @@ public class MetadataItemTest {
 
   @Test
   public void testIsSuperSetOfFilenameAndVersionNotMatching() {
-    var queryKey = ImmutableMetadataItem.builder().filename("filename").build();
+    var queryKey = ImmutableMetadataItem.builder().internalFilename("filename").build();
     var otherKey = ImmutableMetadataItem.builder().internalVersion("version").build();
 
     assertThat(otherKey.isSuperSetOf(queryKey)).isFalse();

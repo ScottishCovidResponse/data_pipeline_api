@@ -6,7 +6,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import uk.ramp.file.FileDirectoryNormaliser;
 import uk.ramp.yaml.YamlReader;
 
 class MetaDataReader {
@@ -14,9 +13,9 @@ class MetaDataReader {
   private final YamlReader yamlReader;
   private final Path absoluteLocationPath;
 
-  MetaDataReader(YamlReader yamlReader, FileDirectoryNormaliser fileDirectoryNormaliser) {
+  MetaDataReader(YamlReader yamlReader, String dataDirectory) {
     this.yamlReader = yamlReader;
-    this.absoluteLocationPath = Path.of(fileDirectoryNormaliser.normalisePath(LOCATION));
+    this.absoluteLocationPath = Path.of(dataDirectory, LOCATION);
   }
 
   public List<ImmutableMetadataItem> read() {

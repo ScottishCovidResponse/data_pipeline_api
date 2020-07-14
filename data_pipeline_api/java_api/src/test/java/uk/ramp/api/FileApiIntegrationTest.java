@@ -14,38 +14,43 @@ import uk.ramp.hash.Hasher;
 import uk.ramp.metadata.ImmutableMetadataItem;
 
 public class FileApiIntegrationTest {
+  private String configPath;
   private String parentPath;
+  private String dataDirectoryPath;
 
   @Before
   public void setUp() throws IOException, URISyntaxException {
-    parentPath = Paths.get(getClass().getResource("/config.yaml").toURI()).getParent().toString();
-    Files.deleteIfExists(Path.of(parentPath, "exampleWrite.toml"));
-    Files.deleteIfExists(Path.of(parentPath, "access-runId.yaml"));
+    configPath = Paths.get(getClass().getResource("/config.yaml").toURI()).toString();
+    parentPath = Path.of(configPath).getParent().toString();
+    dataDirectoryPath = Path.of(parentPath, "folder/data").toString();
+    Files.deleteIfExists(Path.of(dataDirectoryPath, "exampleWrite.toml"));
+    Files.deleteIfExists(Path.of("access-runId.yaml"));
   }
 
   @Test
   public void testOpenForRead() throws Exception {
     var query = ImmutableMetadataItem.builder().component("example-estimate").build();
     var buffer = ByteBuffer.allocate(16);
-    FileApi fileApi = new FileApi(Path.of(parentPath));
+    FileApi fileApi = new FileApi(Path.of(configPath));
     fileApi.openForRead(query).read(buffer);
     assertThat(new String(buffer.array()).contains("title = \"TOML Example\"\n"));
   }
 
   @Test
   public void testOpenForWrite() throws IOException {
-    var query = ImmutableMetadataItem.builder().filename("exampleWrite.toml").build();
+    var query = ImmutableMetadataItem.builder().internalFilename("exampleWrite.toml").build();
     var buffer = ByteBuffer.allocate(16);
     buffer.put("testWrite".getBytes());
     buffer.flip();
-    FileApi fileApi = new FileApi(Path.of(parentPath));
+    FileApi fileApi = new FileApi(Path.of(configPath));
     fileApi.openForWrite(query).write(buffer);
-    assertThat(Files.readString(Path.of(parentPath, "exampleWrite.toml"))).isEqualTo("testWrite");
+    assertThat(Files.readString(Path.of(dataDirectoryPath, "exampleWrite.toml")))
+        .isEqualTo("testWrite");
   }
 
   @Test
   public void testClose() throws IOException {
-    FileApi api = new FileApi(Path.of(parentPath));
+    FileApi api = new FileApi(Path.of(configPath));
     api.close();
     assertThat(Files.readString(Path.of(parentPath, "access-runId.yaml")))
         .contains("open_timestamp")
@@ -56,10 +61,10 @@ public class FileApiIntegrationTest {
 
   @Test
   public void testWriteNewHash() throws IOException {
-    var writeFilePath = Path.of(parentPath, "exampleWrite.toml").toString();
-    var query = ImmutableMetadataItem.builder().filename("exampleWrite.toml").build();
+    var writeFilePath = Path.of(dataDirectoryPath, "exampleWrite.toml").toString();
+    var query = ImmutableMetadataItem.builder().internalFilename("exampleWrite.toml").build();
     var buffer = ByteBuffer.allocate(16).put("testWrite".getBytes()).flip();
-    FileApi fileApi = new FileApi(Path.of(parentPath));
+    FileApi fileApi = new FileApi(Path.of(configPath));
     var fileHandle = fileApi.openForWrite(query);
     fileHandle.write(buffer);
     fileHandle.close();
@@ -73,9 +78,9 @@ public class FileApiIntegrationTest {
 
   @Test
   public void testNoIOIfFileHandleNotClosed() throws IOException {
-    var query = ImmutableMetadataItem.builder().filename("exampleWrite.toml").build();
+    var query = ImmutableMetadataItem.builder().internalFilename("exampleWrite.toml").build();
     var buffer = ByteBuffer.allocate(16).put("testWrite".getBytes()).flip();
-    FileApi fileApi = new FileApi(Path.of(parentPath));
+    FileApi fileApi = new FileApi(Path.of(configPath));
     var fileHandle = fileApi.openForWrite(query);
     fileHandle.write(buffer);
     fileApi.close();

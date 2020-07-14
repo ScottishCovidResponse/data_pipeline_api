@@ -2,10 +2,10 @@ package uk.ramp.config;
 
 import static uk.ramp.file.FileDirectoryNormaliser.normalisePath;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import org.immutables.value.Value.Derived;
@@ -17,30 +17,26 @@ import uk.ramp.metadata.ImmutableMetadataItem;
 @JsonDeserialize
 public interface Config {
   @JsonProperty("data_directory")
-  Optional<String> dataDirectory();
+  Optional<String> internalDataDirectory();
 
+  @JsonIgnore
   default String normalisedDataDirectory() {
-    var dataDirectory = dataDirectory().orElse(".");
-    var dataDirectoryPath = Paths.get(dataDirectory);
-
-    if (dataDirectoryPath.isAbsolute()) {
-      return dataDirectoryPath.toString();
-    }
-
-    return Paths.get(Paths.get(parentPath().orElseThrow()).toString(), dataDirectoryPath.toString())
-        .toString();
+    return normalisePath(parentPath().orElseThrow(), internalDataDirectory().orElse("."));
   }
 
   @JsonProperty("access_log")
   Optional<String> accessLog();
 
   @Derived
+  @JsonIgnore
   default boolean accessLogDisabled() {
     return accessLog().orElse("").equalsIgnoreCase("false");
   }
 
+  @JsonIgnore
   Optional<String> parentPath();
 
+  @JsonIgnore
   default String normalisedAccessLogPath() {
     var accessLogPath =
         accessLog().orElse("access-{run_id}.yaml").replace("{run_id}", runId().orElseThrow());
@@ -52,6 +48,7 @@ public interface Config {
   Optional<Boolean> internalFailOnHashMisMatch();
 
   @Derived
+  @JsonIgnore
   default boolean failOnHashMisMatch() {
     return internalFailOnHashMisMatch().orElse(true);
   }

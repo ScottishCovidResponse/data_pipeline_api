@@ -32,17 +32,36 @@ public class OverridesApplier {
         ImmutableOverrideItem.builder()
             .use(
                 ImmutableMetadataItem.builder()
-                    .filename(query.filename().orElseGet(generatedFilename))
+                    .internalFilename(query.internalFilename().orElseGet(generatedFilename))
+                    .build())
+            .build();
+
+    OverrideItem dataDirectoryOverride =
+        ImmutableOverrideItem.builder()
+            .use(
+                ImmutableMetadataItem.builder()
+                    .dataDirectory(config.normalisedDataDirectory())
                     .build())
             .build();
 
     return query
         .applyOverrides(new ArrayList<>(config.writeQueryOverrides()))
         .applyOverrides(List.of(runIdOverride))
-        .applyOverrides(List.of(filenameOverride));
+        .applyOverrides(List.of(filenameOverride))
+        .applyOverrides(List.of(dataDirectoryOverride));
   }
 
   public MetadataItem applyReadOverrides(MetadataItem query) {
-    return query.applyOverrides(new ArrayList<>(config.readQueryOverrides()));
+    OverrideItem dataDirectoryOverride =
+        ImmutableOverrideItem.builder()
+            .use(
+                ImmutableMetadataItem.builder()
+                    .dataDirectory(config.normalisedDataDirectory())
+                    .build())
+            .build();
+
+    return query
+        .applyOverrides(new ArrayList<>(config.readQueryOverrides()))
+        .applyOverrides(List.of(dataDirectoryOverride));
   }
 }

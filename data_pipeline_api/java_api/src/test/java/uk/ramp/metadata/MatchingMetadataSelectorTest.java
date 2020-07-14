@@ -11,14 +11,14 @@ public class MatchingMetadataSelectorTest {
   private final MetadataItem item1 =
       ImmutableMetadataItem.builder()
           .dataProduct("test")
-          .filename("testFileName0")
+          .internalFilename("testFileName0")
           .internalVersion("1.0.0")
           .build();
 
   private final MetadataItem item2 =
       ImmutableMetadataItem.builder()
           .dataProduct("test")
-          .filename("testFileName1")
+          .internalFilename("testFileName1")
           .internalVersion("2.0.0")
           .build();
 

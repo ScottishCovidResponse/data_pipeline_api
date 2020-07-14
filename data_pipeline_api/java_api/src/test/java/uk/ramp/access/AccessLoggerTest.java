@@ -41,7 +41,11 @@ public class AccessLoggerTest {
     openTimestamp = Instant.ofEpochMilli(120);
     callMetadata = mock(MetadataItem.class);
     accessMetadata =
-        ImmutableMetadataItem.builder().filename("file.txt").calculatedHash("hash").build();
+        ImmutableMetadataItem.builder()
+            .dataDirectory("dataDirectory")
+            .internalFilename("file.txt")
+            .calculatedHash("hash")
+            .build();
     hasher = mock(Hasher.class);
     readEntry =
         ImmutableAccessEntry.builder()
@@ -59,8 +63,7 @@ public class AccessLoggerTest {
             .build();
 
     when(config.runId()).thenReturn(Optional.of("run id"));
-    when(config.dataDirectory()).thenReturn(Optional.of("data directory"));
-    when(config.parentPath()).thenReturn(Optional.of("parentPath/"));
+    when(config.normalisedDataDirectory()).thenReturn("dataDirectory");
     when(hasher.fileHash(any())).thenReturn("hash");
   }
 
@@ -91,7 +94,7 @@ public class AccessLoggerTest {
     var expectedLogData =
         ImmutableAccessLog.builder()
             .accessEntries(entries)
-            .dataDirectory("data directory")
+            .dataDirectory("dataDirectory")
             .openTimestamp(Instant.ofEpochMilli(120))
             .closeTimestamp(Instant.ofEpochMilli(123))
             .config(config)

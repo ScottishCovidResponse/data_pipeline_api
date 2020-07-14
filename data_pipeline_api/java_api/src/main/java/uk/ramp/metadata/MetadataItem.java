@@ -1,5 +1,8 @@
 package uk.ramp.metadata;
 
+import static uk.ramp.file.FileDirectoryNormaliser.normalisePath;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,12 +20,22 @@ import uk.ramp.config.Config.OverrideItem;
 @JsonSerialize
 @JsonDeserialize
 public interface MetadataItem {
-  Optional<String> filename();
+  @JsonProperty("filename")
+  Optional<String> internalFilename();
+
+  @JsonIgnore
+  Optional<String> dataDirectory();
+
+  @JsonIgnore
+  default String normalisedFilename() {
+    return normalisePath(dataDirectory().orElseThrow(), internalFilename().orElseThrow());
+  }
 
   @JsonProperty("version")
   Optional<String> internalVersion();
 
   @Derived
+  @JsonIgnore
   default ArtifactVersion comparableVersion() {
     return internalVersion()
         .map(DefaultArtifactVersion::new)
@@ -48,7 +61,7 @@ public interface MetadataItem {
 
   default boolean isSuperSetOf(MetadataItem key) {
     return List.<Function<MetadataItem, Optional<String>>>of(
-            MetadataItem::filename,
+            MetadataItem::internalFilename,
             MetadataItem::component,
             MetadataItem::dataProduct,
             MetadataItem::internalVersion,
@@ -87,8 +100,9 @@ public interface MetadataItem {
   private MetadataItem applyOverride(MetadataItem baseMetadata, MetadataItem metadataOverride) {
     var newMetadataItem = ImmutableMetadataItem.copyOf(baseMetadata);
 
-    if (metadataOverride.filename().isPresent()) {
-      newMetadataItem = newMetadataItem.withFilename(metadataOverride.filename().get());
+    if (metadataOverride.internalFilename().isPresent()) {
+      newMetadataItem =
+          newMetadataItem.withInternalFilename(metadataOverride.internalFilename().get());
     }
 
     if (metadataOverride.component().isPresent()) {
@@ -122,6 +136,10 @@ public interface MetadataItem {
 
     if (metadataOverride.source().isPresent()) {
       newMetadataItem = newMetadataItem.withSource(metadataOverride.source().get());
+    }
+
+    if (metadataOverride.dataDirectory().isPresent()) {
+      newMetadataItem = newMetadataItem.withDataDirectory(metadataOverride.dataDirectory().get());
     }
 
     return newMetadataItem;

@@ -1,6 +1,5 @@
 package uk.ramp.access;
 
-import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -46,9 +45,7 @@ class AccessLoggerImpl implements AccessLogger {
 
   @Override
   public void logWrite(MetadataItem callMetadata, MetadataItem writeMetadata) {
-    var writtenFilePath =
-        Path.of(config.parentPath().orElseThrow(), writeMetadata.filename().orElseThrow())
-            .toString();
+    var writtenFilePath = writeMetadata.normalisedFilename();
     var newHash = hasher.fileHash(writtenFilePath);
     var overrideWriteMetadata =
         ImmutableMetadataItem.copyOf(writeMetadata).withCalculatedHash(newHash);
@@ -70,7 +67,7 @@ class AccessLoggerImpl implements AccessLogger {
             .runId(config.runId().orElseThrow())
             .openTimestamp(openTimestamp)
             .closeTimestamp(clock.instant())
-            .dataDirectory(config.dataDirectory().orElseThrow())
+            .dataDirectory(config.normalisedDataDirectory())
             .config(config)
             .build();
     writer.write(log);

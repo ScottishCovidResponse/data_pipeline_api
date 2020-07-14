@@ -16,7 +16,6 @@ import uk.ramp.access.AccessLoggerFactory;
 import uk.ramp.config.Config;
 import uk.ramp.config.ConfigFactory;
 import uk.ramp.file.CleanableFileChannel;
-import uk.ramp.file.FileDirectoryNormaliser;
 import uk.ramp.hash.HashMetadataAppender;
 import uk.ramp.hash.Hasher;
 import uk.ramp.metadata.MetadataItem;
@@ -40,21 +39,18 @@ public class FileApi implements AutoCloseable {
   private final MetadataSelector metadataSelector;
   private final CleanableAccessLogger accessLoggerWrapper;
   private final OverridesApplier overridesApplier;
-  private final FileDirectoryNormaliser fileDirectoryNormaliser;
   private final HashMetadataAppender hashMetadataAppender;
   private final boolean shouldVerifyHash;
 
-  public FileApi(Path configFolderPath) {
-    this(Clock.systemUTC(), configFolderPath);
+  public FileApi(Path configFilePath) {
+    this(Clock.systemUTC(), configFilePath);
   }
 
-  FileApi(Clock clock, Path parentPath) {
+  FileApi(Clock clock, Path configFilePath) {
     var openTimestamp = clock.instant();
     var hasher = new Hasher();
-    this.fileDirectoryNormaliser = new FileDirectoryNormaliser(parentPath.toString());
-    var config =
-        new ConfigFactory()
-            .config(new YamlFactory().yamlReader(), hasher, openTimestamp, fileDirectoryNormaliser);
+    var yamlReader = new YamlFactory().yamlReader();
+    var config = new ConfigFactory().config(yamlReader, hasher, openTimestamp, configFilePath);
     this.overridesApplier = new OverridesApplier(config);
     this.accessLoggerWrapper =
         new CleanableAccessLogger(
@@ -62,7 +58,7 @@ public class FileApi implements AutoCloseable {
     this.cleanable = cleaner.register(this, accessLoggerWrapper);
     this.metadataSelector =
         new MetadataSelectorFactory()
-            .metadataSelector(new YamlFactory().yamlReader(), fileDirectoryNormaliser);
+            .metadataSelector(new YamlFactory().yamlReader(), config.normalisedDataDirectory());
     this.hashMetadataAppender = new HashMetadataAppender(hasher);
     this.shouldVerifyHash = config.failOnHashMisMatch();
   }
@@ -100,8 +96,7 @@ public class FileApi implements AutoCloseable {
   public CleanableFileChannel openForRead(MetadataItem query) throws IOException {
     var overriddenQuery = overridesApplier.applyReadOverrides(query);
     var metaDataItem = metadataSelector.find(overriddenQuery);
-    var normalisedFilename =
-        fileDirectoryNormaliser.normalisePath(metaDataItem.filename().orElseThrow());
+    var normalisedFilename = metaDataItem.normalisedFilename();
     var hashedMetaDataItem = hashMetadataAppender.addHash(metaDataItem, shouldVerifyHash);
     accessLoggerWrapper.accessLogger.logRead(query, hashedMetaDataItem);
     return new CleanableFileChannel(FileChannel.open(Path.of(normalisedFilename), READ), () -> {});
@@ -116,8 +111,7 @@ public class FileApi implements AutoCloseable {
    */
   public CleanableFileChannel openForWrite(MetadataItem query) throws IOException {
     var overriddenQuery = overridesApplier.applyWriteOverrides(query);
-    var filename = overriddenQuery.filename().orElseThrow();
-    var normalisedFilename = fileDirectoryNormaliser.normalisePath(filename);
+    var normalisedFilename = overriddenQuery.normalisedFilename();
     Files.createDirectories(Path.of(normalisedFilename).getParent());
     Files.createFile(Path.of(normalisedFilename));
     Runnable onClose = () -> executeOnCloseFileHandle(query, overriddenQuery);

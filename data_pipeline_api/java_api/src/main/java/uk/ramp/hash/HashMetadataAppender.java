@@ -18,7 +18,7 @@ public class HashMetadataAppender {
 
     var verifiedHash = queryMetaDataItem.verifiedHash().get();
 
-    String calculatedHash = hasher.fileHash(queryMetaDataItem.filename().orElseThrow());
+    String calculatedHash = hasher.fileHash(queryMetaDataItem.normalisedFilename());
 
     if (shouldVerifyHash && !calculatedHash.equals(verifiedHash)) {
       throw new IllegalStateException(

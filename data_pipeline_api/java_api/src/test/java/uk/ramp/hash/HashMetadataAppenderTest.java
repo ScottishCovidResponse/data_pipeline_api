@@ -19,9 +19,14 @@ public class HashMetadataAppenderTest {
 
   @Test
   public void testOpenForRead() {
-    var query = ImmutableMetadataItem.builder().filename("file1").verifiedHash("hash1").build();
+    var query =
+        ImmutableMetadataItem.builder()
+            .dataDirectory("dataDirectory")
+            .internalFilename("file1")
+            .verifiedHash("hash1")
+            .build();
 
-    when(hasher.fileHash("file1")).thenReturn("hash1");
+    when(hasher.fileHash("dataDirectory/file1")).thenReturn("hash1");
 
     var hashAppender = new HashMetadataAppender(hasher);
 
@@ -30,9 +35,14 @@ public class HashMetadataAppenderTest {
 
   @Test
   public void testInvalidHash() {
-    var query = ImmutableMetadataItem.builder().filename("file1").verifiedHash("hash1").build();
+    var query =
+        ImmutableMetadataItem.builder()
+            .dataDirectory("dataDirectory")
+            .internalFilename("file1")
+            .verifiedHash("hash1")
+            .build();
 
-    when(hasher.fileHash("file1")).thenReturn("invalidHash");
+    when(hasher.fileHash("dataDirectory/file1")).thenReturn("invalidHash");
 
     var hashAppender = new HashMetadataAppender(hasher);
 
