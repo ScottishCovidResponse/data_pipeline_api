@@ -9,7 +9,7 @@ public class FileDirectoryNormaliser {
     this.parentPath = parentPath;
   }
 
-  String normalisePath(String path) {
+  protected String normalisePath(String path) {
     if (Path.of(path).isAbsolute()) {
       return path;
     }
