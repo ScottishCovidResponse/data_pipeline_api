@@ -95,6 +95,8 @@ public class CleanableFileChannel
   public CleanableFileChannel position(long newPosition) throws IOException {
     var fileChannel = fileChannelWrapper.fileChannel.position(newPosition);
 
+    // Although it is not officially documented, the underlying implementation of position() can
+    // return null, so we return null here if underlying implementation returns null.
     if (fileChannel == null) {
       return null;
     }
@@ -111,6 +113,8 @@ public class CleanableFileChannel
   public CleanableFileChannel truncate(long size) throws IOException {
     var fileChannel = fileChannelWrapper.fileChannel.truncate(size);
 
+    // Although it is not officially documented, the underlying implementation of truncate() can
+    // return null, so we return null here if underlying implementation returns null.
     if (fileChannel == null) {
       return null;
     }
