@@ -44,7 +44,7 @@ matrix:
 
     - name: 'Java API build and publish'
       before_script:
-        - "cd data_pipeline_api/java_api"
+        - "cd java_api"
       jdk: openjdk11
       language: java
       script: "./gradlew build"
