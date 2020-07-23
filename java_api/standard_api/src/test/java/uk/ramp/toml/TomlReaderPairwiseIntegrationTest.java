@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.io.StringReader;
-import org.junit.Before;
 import org.junit.Test;
 import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.parameters.Components;

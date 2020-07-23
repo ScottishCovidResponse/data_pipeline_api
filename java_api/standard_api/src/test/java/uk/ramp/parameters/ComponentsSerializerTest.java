@@ -1,6 +1,7 @@
 package uk.ramp.parameters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
@@ -10,14 +11,13 @@ import java.io.StringWriter;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.distribution.Distribution.DistributionType;
 import uk.ramp.distribution.ImmutableDistribution;
 import uk.ramp.samples.ImmutableSamples;
 
 public class ComponentsSerializerTest {
-  private final String json = "{\n"
+  private final String expectedJson = "{\n"
       + "  \"example-distribution\": {\n"
       + "    \"distribution\": \"gamma\",\n"
       + "    \"scale\": 2,\n"
@@ -61,6 +61,8 @@ public class ComponentsSerializerTest {
 
     objectMapper.writeValue(writer, components);
 
-    JSONAssert.assertEquals(writer.toString(), json, true);
+    var actualJson = writer.toString();
+    assertThat(actualJson).isNotBlank();
+    assertEquals(actualJson, expectedJson, true);
   }
 }

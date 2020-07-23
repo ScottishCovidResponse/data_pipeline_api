@@ -4,7 +4,6 @@ import com.google.common.collect.Table;
 import java.nio.file.Path;
 import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.objects.NumericalArray;
-import uk.ramp.objects.StandardArrayDataReader;
 import uk.ramp.parameters.ReadComponent;
 import uk.ramp.parameters.ParameterDataWriter;
 import uk.ramp.parameters.ParameterDataWriterImpl;

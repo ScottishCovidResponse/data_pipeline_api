@@ -1,5 +1,6 @@
 package uk.ramp.toml;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 import java.io.IOException;
@@ -7,7 +8,6 @@ import java.io.StringWriter;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.distribution.Distribution.DistributionType;
 import uk.ramp.distribution.ImmutableDistribution;
@@ -16,7 +16,7 @@ import uk.ramp.parameters.ImmutableComponents;
 import uk.ramp.samples.ImmutableSamples;
 
 public class TomlWriterPairwiseIntegrationTest {
-  private final String toml = "[example-estimate]\n"
+  private final String expectedToml = "[example-estimate]\n"
       + "type = \"point-estimate\"\n"
       + "value = 1.0\n"
       + "\n"
@@ -54,6 +54,8 @@ public class TomlWriterPairwiseIntegrationTest {
 
     tomlWriter.write(writer, components);
 
-    assertEquals(writer.toString(), toml, true);
+    var actualToml = writer.toString();
+    assertThat(actualToml).isNotBlank();
+    assertEquals(actualToml, expectedToml, true);
   }
 }
