@@ -28,7 +28,7 @@ public class StandardApi {
     this.parameterDataReader = new ParameterDataReaderImpl(new TomlReader(new TOMLMapper()));
     this.parameterDataWriter = new ParameterDataWriterImpl(new TomlWriter(new TOMLMapper()));
   }
-  StandardApi(FileApi fileApi, ParameterDataReader parameterDataReader, ParameterDataWriter parameterDataWriter, StandardArrayDataReader standardArrayDataReader) {
+  StandardApi(FileApi fileApi, ParameterDataReader parameterDataReader, ParameterDataWriter parameterDataWriter) {
     this.fileApi = fileApi;
     this.parameterDataReader = parameterDataReader;
     this.parameterDataWriter = parameterDataWriter;
@@ -111,21 +111,10 @@ public class StandardApi {
   }
 
   public NumericalArray readArray(String dataProduct, String component) {
-    var query = ImmutableMetadataItem.builder()
-        .dataProduct(dataProduct)
-        .component(component)
-        .build();
-
     throw new UnsupportedOperationException();
   }
 
   public void writeTable(String dataProduct, String component, Table<Integer, String, Number> table) {
-    var query = ImmutableMetadataItem.builder()
-        .dataProduct(dataProduct)
-        .component(component)
-        .extension("h5")
-        .build();
-
     throw new UnsupportedOperationException();
   }
 
@@ -134,12 +123,6 @@ public class StandardApi {
   }
 
   public void writeArray(String dataProduct, String component, Number[] arr) {
-    var query = ImmutableMetadataItem.builder()
-        .dataProduct(dataProduct)
-        .component(component)
-        .extension("h5")
-        .build();
-
     throw new UnsupportedOperationException();
   }
 }

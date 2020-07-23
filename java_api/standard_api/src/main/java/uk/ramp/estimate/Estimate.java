@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.math3.distribution.RealDistribution;
 import org.immutables.value.Value.Immutable;
 import uk.ramp.distribution.Distribution;
 import uk.ramp.parameters.Component;

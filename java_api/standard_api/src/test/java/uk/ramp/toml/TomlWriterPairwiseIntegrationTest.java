@@ -1,7 +1,6 @@
 package uk.ramp.toml;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -55,6 +54,6 @@ public class TomlWriterPairwiseIntegrationTest {
 
     tomlWriter.write(writer, components);
 
-    JSONAssert.assertEquals(writer.toString(), toml, true);
+    assertEquals(writer.toString(), toml, true);
   }
 }

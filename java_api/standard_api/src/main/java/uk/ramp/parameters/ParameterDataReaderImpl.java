@@ -4,8 +4,6 @@ import static com.google.common.base.Charsets.UTF_8;
 import static java.nio.channels.Channels.newReader;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.base.Charsets;
-import java.util.Map;
 import uk.ramp.file.CleanableFileChannel;
 import uk.ramp.toml.TomlReader;
 

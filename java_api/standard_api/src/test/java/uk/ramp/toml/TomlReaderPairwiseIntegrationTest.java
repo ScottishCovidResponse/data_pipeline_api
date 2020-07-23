@@ -1,8 +1,6 @@
 package uk.ramp.toml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
@@ -17,9 +15,6 @@ public class TomlReaderPairwiseIntegrationTest {
   private final String toml = "[example-estimate]\n"
       + "type = \"point-estimate\"\n"
       + "value = 1.0";
-  @Before
-  public void setUp() throws Exception {
-  }
 
   @Test
   public void read() throws IOException {

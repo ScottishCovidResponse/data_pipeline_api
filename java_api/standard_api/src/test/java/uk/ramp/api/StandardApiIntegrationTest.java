@@ -41,7 +41,6 @@ public class StandardApiIntegrationTest {
 
 
   private String configPath;
-  private String parentPath;
   private String dataDirectoryPath;
 
 
@@ -49,7 +48,7 @@ public class StandardApiIntegrationTest {
   @Before
   public void setUp() throws Exception {
     configPath = Paths.get(getClass().getResource("/config.yaml").toURI()).toString();
-    parentPath = Path.of(configPath).getParent().toString();
+    String parentPath = Path.of(configPath).getParent().toString();
     dataDirectoryPath = Path.of(parentPath, "folder/data").toString();
     Files.deleteIfExists(Path.of(dataDirectoryPath, "exampleWrite.toml"));
     Files.deleteIfExists(Path.of(dataDirectoryPath, "actualEstimate.toml"));
