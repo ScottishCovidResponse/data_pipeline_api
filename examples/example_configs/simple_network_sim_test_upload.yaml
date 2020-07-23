@@ -1,0 +1,260 @@
+# Upload of some simple network sim data
+
+post:
+  - &SCRC_FTP
+    target: 'storage_root'
+    data:
+      name:  'SCRC_FTP'
+      root: 'ftp://boydorr.gla.ac.uk/'
+
+  - &human_commutes_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/commutes/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_compartment_transition_1_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/compartment-transition/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_compartment_transition_2_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/compartment-transition/2/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_full_mixing_matrix_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/full-mixing-matrix/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_infection_probability_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/infection-probability/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_infection_probability_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/infection-probability/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_infectious_compartments_1_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/infectious-compartments/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_infectious_compartments_2_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/infectious-compartments/2/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_initial_infections_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/initial-infections/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_locations_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/locations/1/data.json'
+      storage_root: *SCRC_FTP
+
+  - &human_mixing_matrix_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/mixing-matrix/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_movement_multipliers_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/movement-multipliers/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_population_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/population/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_random_seed_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/random-seed/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_start_end_date_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/start-end-date/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_stochasitic_mode_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/stochastic-mode/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_trials_store
+    target: 'storage_location'
+    data:
+      path: 'simple_network_sim/human/trials/1/data.h5'
+      storage_root: *SCRC_FTP
+
+  - &human_commutes_obj
+    target: 'object'
+    data:
+      storage_location: *human_commutes_store
+
+  - &human_compartment_transition_1_obj
+    target: 'object'
+    data:
+      storage_location: *human_compartment_transition_1_store
+
+  - &human_compartment_transition_2_obj
+    target: 'object'
+    data:
+      storage_location: *human_compartment_transition_2_store
+
+  - &human_full_mixing_matrix_obj
+    target: 'object'
+    data:
+      storage_location: *human_full_mixing_matrix_store
+
+  - &human_infection_probability_obj
+    target: 'object'
+    data:
+      storage_location: *human_infection_probability_store
+
+  - &human_infection_probability_obj
+    target: 'object'
+    data:
+      storage_location: *human_infection_probability_store
+
+  - &human_infectious_compartments_1_obj
+    target: 'object'
+    data:
+      storage_location: *human_infectious_compartments_1_store
+
+  - &human_infectious_compartments_2_obj
+    target: 'object'
+    data:
+      storage_location: *human_infectious_compartments_2_store
+
+  - &human_initial_infections_obj
+    target: 'object'
+    data:
+      storage_location: *human_initial_infections_store
+
+  - &human_locations_obj
+    target: 'object'
+    data:
+      storage_location: *human_locations_store
+
+  - &human_mixing_matrix_obj
+    target: 'object'
+    data:
+      storage_location: *human_mixing_matrix_store
+
+  - &human_movement_multipliers_obj
+    target: 'object'
+    data:
+      storage_location: *human_movement_multipliers_store
+
+  - &human_population_obj
+    target: 'object'
+    data:
+      storage_location: *human_population_store
+
+  - &human_random_seed_obj
+    target: 'object'
+    data:
+      storage_location: *human_random_seed_store
+
+  - &human_start_end_date_obj
+    target: 'object'
+    data:
+      storage_location: *human_start_end_date_store
+
+  - &human_stochasitic_mode_obj
+    target: 'object'
+    data:
+      storage_location: *human_stochasitic_mode_store
+
+  - &human_trials_obj
+    target: 'object'
+    data:
+      storage_location: *human_trials_store
+
+
+
+
+
+  - &namespace
+    target: 'namespace'
+    data:
+      name: 'simple_network_sim_test'
+
+  -
+    target: 'data_product'
+    data:
+      name: 'human/population'
+      version: '0.1.0'
+      namespace: *namespace
+      object: *human_population_obj
+
+  -
+    target: 'data_product'
+    data:
+      name: 'human/mixing-matrix'
+      version: '0.1.0'
+      namespace: *namespace
+      object: *human_mixing_matrix_obj
+
+  -
+    target: 'data_product'
+    data:
+      name: 'human/compartment-transition'
+      version: '0.1.0'
+      namespace: *namespace
+      object: *human_compartment_transition_obj
+
+  -
+    target: 'data_product'
+    data:
+      name: 'human/commutes'
+      version: '0.1.0'
+      namespace: *namespace
+      object: *human_commutes_obj
+
+  -
+    target: 'object_component'
+    data:
+      name: 'mixing-matrix'
+      object: *human_mixing_matrix_obj
+
+  -
+    target: 'object_component'
+    data:
+      name: 'commutes'
+      object: *human_commutes_obj
+
+  -
+    target: 'object_component'
+    data:
+      name: 'compartment-transition'
+      object: *human_compartment_transition_obj
+
+  -
+    target: 'object_component'
+    data:
+      name: 'population'
+      object: *human_population_obj
