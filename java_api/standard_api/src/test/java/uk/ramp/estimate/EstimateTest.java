@@ -16,7 +16,7 @@ public class EstimateTest {
   @Test
   public void derivedSampleFromEstimate() {
     var data = ImmutableEstimate.builder().internalValue(5).build();
-    assertThat(data.getSample()).isEqualTo(5);
+    assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(data::getSamples);
   }
 
 

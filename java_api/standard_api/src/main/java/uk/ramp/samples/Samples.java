@@ -1,14 +1,14 @@
 package uk.ramp.samples;
 
-import static uk.ramp.samples.Sampler.sampleFrom;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
-import org.apache.commons.math3.distribution.RealDistribution;
 import org.immutables.value.Value.Immutable;
 import uk.ramp.distribution.Distribution;
+import uk.ramp.distribution.Distribution.DistributionType;
+import uk.ramp.distribution.ImmutableDistribution;
 import uk.ramp.parameters.Component;
 
 @Immutable
@@ -33,13 +33,16 @@ public interface Samples extends Component {
 
   @Override
   @JsonIgnore
-  default Number getSample() {
-    return sampleFrom(samples());
+  default List<Number> getSamples() {
+    return samples();
   }
 
   @Override
   @JsonIgnore
   default Distribution getDistribution() {
-    throw new UnsupportedOperationException("Cannot produce a distribution from a samples parameter");
+    return ImmutableDistribution.builder()
+        .internalType(DistributionType.empirical)
+        .empiricalSamples(samples())
+        .build();
   }
 }

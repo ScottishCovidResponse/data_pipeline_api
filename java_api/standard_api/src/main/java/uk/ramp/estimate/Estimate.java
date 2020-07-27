@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.List;
 import org.immutables.value.Value.Immutable;
 import uk.ramp.distribution.Distribution;
 import uk.ramp.parameters.Component;
@@ -23,13 +24,13 @@ public interface Estimate extends Component {
 
   @Override
   @JsonIgnore
-  default Number getSample() {
-    return internalValue();
+  default List<Number> getSamples() {
+    throw new UnsupportedOperationException("Cannot produce list of samples from an estimate parameter");
   }
 
   @Override
   @JsonIgnore
   default Distribution getDistribution() {
-      throw new UnsupportedOperationException("Cannot produce an distribution from an estimate parameter");
+      throw new UnsupportedOperationException("Cannot produce a distribution from an estimate parameter");
   }
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,10 +77,10 @@ public class StandardApiTest {
   }
 
   @Test
-  public void readSample() {
-    when(component.getSample()).thenReturn(5);
+  public void readSamples() {
+    when(component.getSamples()).thenReturn(List.of(1, 2, 3));
     var api = new StandardApi(fileApi, parameterDataReader, parameterDataWriter);
-    assertThat(api.readSample("dataProduct", "component")).isEqualTo(5);
+    assertThat(api.readSamples("dataProduct", "component")).containsExactly(1, 2, 3);
   }
 
   @Test

@@ -1,9 +1,8 @@
 package uk.ramp.distribution;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.data.Offset.offset;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.stream.IntStream;
 import org.junit.Test;
 import uk.ramp.distribution.Distribution.DistributionType;
 
@@ -20,12 +19,9 @@ public class DistributionTest {
   }
 
   @Test
-  public void derivedSampleFromDistribution() {
-    var distributionAvgUsingSamples = IntStream.rangeClosed(0, 1000000)
-        .parallel()
-        .mapToDouble(i -> distribution.getSample().doubleValue())
-        .average();
-    assertThat(distributionAvgUsingSamples).hasValueCloseTo(2D, offset(0.01));
+  public void derivedSamplesFromDistribution() {
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(distribution::getSamples);
   }
 
   @Test

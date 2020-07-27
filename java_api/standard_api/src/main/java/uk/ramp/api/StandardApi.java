@@ -2,6 +2,7 @@ package uk.ramp.api;
 
 import com.google.common.collect.Table;
 import java.nio.file.Path;
+import java.util.List;
 import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.objects.NumericalArray;
 import uk.ramp.parameters.ReadComponent;
@@ -84,7 +85,7 @@ public class StandardApi {
     }
   }
 
-  public Number readSample(String dataProduct, String component) {
+  public List<Number> readSamples(String dataProduct, String component) {
     var query = ImmutableMetadataItem.builder()
         .dataProduct(dataProduct)
         .component(component)
@@ -94,7 +95,7 @@ public class StandardApi {
     try(CleanableFileChannel fileChannel = fileApi.openForRead(query)) {
       data = parameterDataReader.read(fileChannel, component);
     }
-    return data.getSample();
+    return data.getSamples();
   }
 
   public void writeSamples(String dataProduct, String component, Samples samples) {

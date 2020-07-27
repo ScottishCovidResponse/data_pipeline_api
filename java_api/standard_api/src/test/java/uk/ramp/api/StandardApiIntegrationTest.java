@@ -103,7 +103,7 @@ public class StandardApiIntegrationTest {
     var stdApi = new StandardApi(Path.of(configPath));
     String dataProduct = "parameter";
     String component = "example-samples";
-    assertThat(stdApi.readSample(dataProduct, component)).isIn(1, 2, 3);
+    assertThat(stdApi.readSamples(dataProduct, component)).containsExactly(1, 2, 3);
   }
 
   @Test
@@ -172,7 +172,7 @@ public class StandardApiIntegrationTest {
   }
 
   private void assertEqualFileContents(String file1, String file2) throws IOException {
-    assertThat(Files.readAllBytes(Path.of(dataDirectoryPath, file1)))
-        .isEqualTo(Files.readAllBytes(Path.of(dataDirectoryPath, file2)));
+    assertThat(Files.readString(Path.of(dataDirectoryPath, file1)))
+        .isEqualTo(Files.readString(Path.of(dataDirectoryPath, file2)));
   }
 }

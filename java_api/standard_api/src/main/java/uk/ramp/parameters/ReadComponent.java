@@ -1,11 +1,12 @@
 package uk.ramp.parameters;
 
+import java.util.List;
 import uk.ramp.distribution.Distribution;
 
 public interface ReadComponent {
   Number getEstimate();
 
-  Number getSample();
+  List<Number> getSamples();
 
   Distribution getDistribution();
 }
