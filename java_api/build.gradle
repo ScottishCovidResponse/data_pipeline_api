@@ -3,17 +3,3 @@ buildscript {
         mavenCentral()
     }
 }
-
-plugins {
-    id 'java'
-    id 'jacoco'
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
-}
-
-check.dependsOn jacocoTestReport
