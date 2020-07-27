@@ -29,3 +29,21 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     annotationProcessor "org.immutables:value:2.8.8"
 }
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/scottishcovidresponse/data_pipeline_api")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("JAVA_API_PUBLISH_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("JAVA_API_PUBLISH_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
