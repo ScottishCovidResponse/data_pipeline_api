@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.apache.commons.math3.distribution.EnumeratedRealDistribution;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
@@ -26,7 +29,8 @@ public interface Distribution extends Component {
     gamma(),
     exponential(),
     uniform(),
-    empirical();
+    empirical(),
+    categorical();
   }
 
   @JsonProperty("distribution")
@@ -43,6 +47,10 @@ public interface Distribution extends Component {
 
   @JsonIgnore
   Optional<List<Number>> empiricalSamples();
+
+  Optional<List<Integer>> bins();
+
+  Optional<List<Number>> weights();
 
   private double mean() {
     return underlyingDistribution().getNumericalMean();
@@ -87,6 +95,33 @@ public interface Distribution extends Component {
       dist.load(
           empiricalSamples().orElseThrow().stream().mapToDouble(Number::doubleValue).toArray());
       return dist;
+    } else if (internalType().equals(DistributionType.categorical)) {
+      List<Integer> bins = bins().orElseThrow();
+      List<Double> weights =
+          weights().orElseThrow().stream()
+              .mapToDouble(Number::doubleValue)
+              .boxed()
+              .collect(Collectors.toList());
+      double[] outcomes =
+          IntStream.rangeClosed(bins.get(0), bins.get(bins.size() - 1))
+              .mapToDouble(v -> v)
+              .toArray();
+      List<Double> probabilitiesList =
+          IntStream.range(0, bins.size() - 1)
+              .mapToObj(
+                  idx ->
+                      IntStream.range(bins.get(idx), bins.get(idx + 1))
+                          .mapToDouble(i -> weights.get(idx))
+                          .boxed()
+                          .collect(Collectors.toList()))
+              .flatMapToDouble(vals -> vals.stream().mapToDouble(Double::doubleValue))
+              .boxed()
+              .collect(Collectors.toList());
+
+      probabilitiesList.add(weights.get(weights.size() - 1));
+      double[] probabilities = probabilitiesList.stream().mapToDouble(i -> i).toArray();
+
+      return new EnumeratedRealDistribution(outcomes, probabilities);
     }
     throw new UnsupportedOperationException(
         String.format("Distribution type %s is not supported.", internalType()));
