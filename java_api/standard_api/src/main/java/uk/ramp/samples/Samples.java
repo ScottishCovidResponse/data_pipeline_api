@@ -19,16 +19,10 @@ public interface Samples extends Component {
 
   @JsonIgnore
   default Number mean() {
-    double mean = samples().stream()
+    return samples().stream()
         .mapToDouble(Number::doubleValue)
         .average()
         .orElseThrow();
-
-    if (mean % 1 == 0) {
-      return (int) mean;
-    }
-
-    return mean;
   }
 
   @Override
