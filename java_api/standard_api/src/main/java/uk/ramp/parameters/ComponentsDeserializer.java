@@ -16,25 +16,26 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.distribution.ImmutableDistribution;
+import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.samples.ImmutableSamples;
 
 public class ComponentsDeserializer extends JsonDeserializer<Components> {
-  private static final Map<String, Class<?>> typeMapping = Map.of(
-      "point-estimate", ImmutableEstimate.class,
-      "distribution", ImmutableDistribution.class,
-      "samples", ImmutableSamples.class
-  );
+  private static final Map<String, Class<?>> typeMapping =
+      Map.of(
+          "point-estimate", ImmutableEstimate.class,
+          "distribution", ImmutableDistribution.class,
+          "samples", ImmutableSamples.class);
 
   @Override
   public Components deserialize(JsonParser jsonParser, DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
     JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
 
-    var components = Streams.stream(rootNode.fields())
-        .map(this::deserializeSingleComponent)
-        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    var components =
+        Streams.stream(rootNode.fields())
+            .map(this::deserializeSingleComponent)
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
     return ImmutableComponents.builder().components(components).build();
   }
@@ -45,9 +46,8 @@ public class ComponentsDeserializer extends JsonDeserializer<Components> {
     String type = componentNode.get("type").asText();
     componentNode.remove("type");
     Class<?> deserializeClass = typeMapping.get(type);
-    ObjectMapper objectMapper = new ObjectMapper()
-        .registerModule(new Jdk8Module())
-        .registerModule(new GuavaModule());
+    ObjectMapper objectMapper =
+        new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new GuavaModule());
     Component component;
     try {
       component = (Component) objectMapper.treeToValue(componentNode, deserializeClass);

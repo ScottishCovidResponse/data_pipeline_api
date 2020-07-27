@@ -21,9 +21,8 @@ public class SamplesTest {
   // TODO - large numbers are currently unsupported.
   public void derivedEstimateLargeSamples() {
     var largeValue = 100_000_000_000_000_000L;
-    var samples = ImmutableSamples.builder()
-        .addSamples(largeValue, largeValue + 1, largeValue + 2)
-        .build();
+    var samples =
+        ImmutableSamples.builder().addSamples(largeValue, largeValue + 1, largeValue + 2).build();
     assertThat(samples.getEstimate()).isEqualTo(largeValue + 1);
   }
 
@@ -39,11 +38,12 @@ public class SamplesTest {
     var distribution = samples.getDistribution();
     assertThat(distribution.internalType()).isEqualTo(empirical);
     assertThat(distribution.getEstimate().floatValue()).isCloseTo(2, offset(1e-7F));
-    var distSampleAvg = IntStream.range(0, 10000)
-        .parallel()
-        .mapToDouble(i -> distribution.getSample().doubleValue())
-        .average()
-        .orElseThrow();
+    var distSampleAvg =
+        IntStream.range(0, 10000)
+            .parallel()
+            .mapToDouble(i -> distribution.getSample().doubleValue())
+            .average()
+            .orElseThrow();
     assertThat(distSampleAvg).isBetween(1.95, 2.05);
   }
 }

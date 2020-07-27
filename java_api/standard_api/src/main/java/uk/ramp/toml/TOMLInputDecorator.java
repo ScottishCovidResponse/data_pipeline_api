@@ -18,9 +18,8 @@ class TOMLInputDecorator extends InputDecorator {
 
   @Override
   public InputStream decorate(IOContext ctxt, InputStream in) throws IOException {
-    var objectMapper = new ObjectMapper()
-        .registerModule(new Jdk8Module())
-        .registerModule(new GuavaModule());
+    var objectMapper =
+        new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new GuavaModule());
 
     Map<String, Object> map = new Toml().read(in).toMap();
     String objString = objectMapper.writeValueAsString(map);
@@ -28,20 +27,19 @@ class TOMLInputDecorator extends InputDecorator {
   }
 
   @Override
-  public InputStream decorate(IOContext ctxt, byte[] src, int offset, int length) throws IOException {
+  public InputStream decorate(IOContext ctxt, byte[] src, int offset, int length)
+      throws IOException {
     ByteArrayInputStream in = new ByteArrayInputStream(src, offset, length);
     return decorate(ctxt, in);
   }
 
   @Override
   public Reader decorate(IOContext ctxt, Reader r) throws IOException {
-    var objectMapper = new ObjectMapper()
-        .registerModule(new Jdk8Module())
-        .registerModule(new GuavaModule());
+    var objectMapper =
+        new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new GuavaModule());
 
     Map<String, Object> map = new Toml().read(r).toMap();
     String objString = objectMapper.writeValueAsString(map);
     return new StringReader(objString);
   }
-
 }

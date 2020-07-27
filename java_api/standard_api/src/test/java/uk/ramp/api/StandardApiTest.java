@@ -11,12 +11,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.distribution.Distribution;
-import uk.ramp.parameters.Component;
-import uk.ramp.parameters.ParameterDataWriter;
+import uk.ramp.estimate.ImmutableEstimate;
 import uk.ramp.file.CleanableFileChannel;
+import uk.ramp.parameters.Component;
 import uk.ramp.parameters.ParameterDataReader;
+import uk.ramp.parameters.ParameterDataWriter;
 import uk.ramp.samples.Samples;
 
 public class StandardApiTest {
@@ -55,9 +55,7 @@ public class StandardApiTest {
     var api = new StandardApi(fileApi, parameterDataReader, parameterDataWriter);
     api.writeEstimate("dataProduct", "component", 5);
 
-    var expectedParameterData = ImmutableEstimate.builder()
-        .internalValue(5)
-        .build();
+    var expectedParameterData = ImmutableEstimate.builder().internalValue(5).build();
     verify(parameterDataWriter).write(fileChannel, "component", expectedParameterData);
   }
 
@@ -65,8 +63,7 @@ public class StandardApiTest {
   public void readDistribution() {
     when(component.getDistribution()).thenReturn(distribution);
     var api = new StandardApi(fileApi, parameterDataReader, parameterDataWriter);
-    assertThat(api.readDistribution("dataProduct", "component"))
-        .isEqualTo(distribution);
+    assertThat(api.readDistribution("dataProduct", "component")).isEqualTo(distribution);
   }
 
   @Test
@@ -111,12 +108,8 @@ public class StandardApiTest {
   @Test
   public void writeMultipleEstimatesDifferentKey() {
     var api = new StandardApi(fileApi, parameterDataReader, parameterDataWriter);
-    var expectedParameterData1 = ImmutableEstimate.builder()
-        .internalValue(1)
-        .build();
-    var expectedParameterData2 = ImmutableEstimate.builder()
-        .internalValue(2)
-        .build();
+    var expectedParameterData1 = ImmutableEstimate.builder().internalValue(1).build();
+    var expectedParameterData2 = ImmutableEstimate.builder().internalValue(2).build();
     api.writeEstimate("dataProduct", "component1", 1);
     api.writeEstimate("dataProduct", "component2", 2);
     verify(parameterDataWriter).write(fileChannel, "component1", expectedParameterData1);
@@ -127,8 +120,7 @@ public class StandardApiTest {
   @Ignore // Not implemented yet
   public void readArray() {
     var api = new StandardApi(fileApi, parameterDataReader, parameterDataWriter);
-    assertThat(api.readArray("dataProduct", "component").as1DArray())
-        .containsExactly(1, 2, 3);
+    assertThat(api.readArray("dataProduct", "component").as1DArray()).containsExactly(1, 2, 3);
   }
 
   @Test

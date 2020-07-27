@@ -16,15 +16,14 @@ import java.util.Map;
 class TOMLOutputDecorator extends OutputDecorator {
   @Override
   public OutputStream decorate(IOContext ctxt, final OutputStream out) throws IOException {
-    var objMapper = new ObjectMapper()
-        .registerModule(new Jdk8Module())
-        .registerModule(new GuavaModule());
+    var objMapper =
+        new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new GuavaModule());
 
     return new java.io.ByteArrayOutputStream() {
       @Override
       public void close() throws IOException {
         super.close();
-        var jsonStr = new String(this.toByteArray(),StandardCharsets.UTF_8);
+        var jsonStr = new String(this.toByteArray(), StandardCharsets.UTF_8);
         var jsonMap = objMapper.readValue(jsonStr, new TypeReference<Map<String, Object>>() {});
         var tomlStr = new TomlWriter().write(jsonMap);
 
@@ -37,9 +36,8 @@ class TOMLOutputDecorator extends OutputDecorator {
 
   @Override
   public Writer decorate(IOContext ctxt, final Writer w) throws IOException {
-    var objMapper = new ObjectMapper()
-        .registerModule(new Jdk8Module())
-        .registerModule(new GuavaModule());
+    var objMapper =
+        new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new GuavaModule());
 
     return new java.io.StringWriter() {
       @Override

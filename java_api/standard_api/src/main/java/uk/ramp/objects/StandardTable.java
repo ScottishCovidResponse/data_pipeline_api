@@ -1,5 +1,3 @@
 package uk.ramp.objects;
 
-public interface StandardTable {
-
-}
+public interface StandardTable {}

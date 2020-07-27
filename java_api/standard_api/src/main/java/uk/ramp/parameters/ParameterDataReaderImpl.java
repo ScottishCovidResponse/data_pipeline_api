@@ -10,14 +10,14 @@ import uk.ramp.toml.TomlReader;
 public class ParameterDataReaderImpl implements ParameterDataReader {
   private final TomlReader tomlReader;
 
-  public ParameterDataReaderImpl(TomlReader tomlReader){
+  public ParameterDataReaderImpl(TomlReader tomlReader) {
     this.tomlReader = tomlReader;
   }
 
   @Override
   public ReadComponent read(CleanableFileChannel fileChannel, String component) {
     return tomlReader
-        .read(newReader(fileChannel, UTF_8), new TypeReference<Components>(){})
+        .read(newReader(fileChannel, UTF_8), new TypeReference<Components>() {})
         .components()
         .get(component);
   }

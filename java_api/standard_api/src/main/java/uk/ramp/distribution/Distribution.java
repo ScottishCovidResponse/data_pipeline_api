@@ -84,9 +84,8 @@ public interface Distribution extends Component {
       return new UniformRealDistribution();
     } else if (internalType().equals(DistributionType.empirical)) {
       var dist = new EmpiricalDistribution();
-      dist.load(empiricalSamples().orElseThrow().stream()
-          .mapToDouble(Number::doubleValue)
-          .toArray());
+      dist.load(
+          empiricalSamples().orElseThrow().stream().mapToDouble(Number::doubleValue).toArray());
       return dist;
     }
     throw new UnsupportedOperationException(

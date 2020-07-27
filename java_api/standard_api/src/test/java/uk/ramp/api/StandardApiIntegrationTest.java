@@ -12,38 +12,36 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import uk.ramp.distribution.Distribution;
 import uk.ramp.distribution.Distribution.DistributionType;
 import uk.ramp.distribution.ImmutableDistribution;
 import uk.ramp.samples.ImmutableSamples;
 import uk.ramp.samples.Samples;
-import uk.ramp.distribution.Distribution;
 
 public class StandardApiIntegrationTest {
-  private final Table<Integer, String, Number> mockTable = ImmutableTable.<Integer, String, Number>builder()
-      .put(0, "colA", 5)
-      .put(1, "colA", 6)
-      .put(2, "colA", 7)
-      .put(0, "colB", 0)
-      .put(1, "colB", 1)
-      .put(2, "colB", 2)
-      .build();
+  private final Table<Integer, String, Number> mockTable =
+      ImmutableTable.<Integer, String, Number>builder()
+          .put(0, "colA", 5)
+          .put(1, "colA", 6)
+          .put(2, "colA", 7)
+          .put(0, "colB", 0)
+          .put(1, "colB", 1)
+          .put(2, "colB", 2)
+          .build();
 
-  private final Number[] array = new Number[]{5, 6, 3.4};
+  private final Number[] array = new Number[] {5, 6, 3.4};
   private Samples samples;
 
-  private final Distribution distribution = ImmutableDistribution.builder()
-      .internalShape(1)
-      .internalScale(2)
-      .internalType(DistributionType.gamma)
-      .build();
+  private final Distribution distribution =
+      ImmutableDistribution.builder()
+          .internalShape(1)
+          .internalScale(2)
+          .internalType(DistributionType.gamma)
+          .build();
   private final Number estimate = 1.0;
-
-
 
   private String configPath;
   private String dataDirectoryPath;
-
-
 
   @Before
   public void setUp() throws Exception {
@@ -58,7 +56,6 @@ public class StandardApiIntegrationTest {
     Files.deleteIfExists(Path.of(dataDirectoryPath, "parameter/runId.toml"));
     Files.deleteIfExists(Path.of("access-runId.yaml"));
     samples = ImmutableSamples.builder().addSamples(1, 2, 3).build();
-
   }
 
   @Test

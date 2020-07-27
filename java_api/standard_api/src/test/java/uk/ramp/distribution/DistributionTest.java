@@ -7,11 +7,12 @@ import org.junit.Test;
 import uk.ramp.distribution.Distribution.DistributionType;
 
 public class DistributionTest {
-  private final Distribution distribution = ImmutableDistribution.builder()
-      .internalType(DistributionType.gamma)
-        .internalShape(1)
-        .internalScale(2)
-        .build();
+  private final Distribution distribution =
+      ImmutableDistribution.builder()
+          .internalType(DistributionType.gamma)
+          .internalShape(1)
+          .internalScale(2)
+          .build();
 
   @Test
   public void derivedEstimateFromDistribution() {

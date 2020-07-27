@@ -10,6 +10,7 @@ public class TomlWriter {
   public TomlWriter(TOMLMapper tomlMapper) {
     this.tomlMapper = tomlMapper;
   }
+
   public <T> void write(Writer writer, T object) {
     try {
       tomlMapper.writeValue(writer, object);

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ramp.samples.Sampler;
 
 public class SamplerTest {
   private Random random;

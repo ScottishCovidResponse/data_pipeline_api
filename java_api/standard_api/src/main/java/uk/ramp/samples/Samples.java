@@ -1,6 +1,5 @@
 package uk.ramp.samples;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -19,10 +18,7 @@ public interface Samples extends Component {
 
   @JsonIgnore
   default Number mean() {
-    return samples().stream()
-        .mapToDouble(Number::doubleValue)
-        .average()
-        .orElseThrow();
+    return samples().stream().mapToDouble(Number::doubleValue).average().orElseThrow();
   }
 
   @Override

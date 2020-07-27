@@ -25,12 +25,14 @@ public interface Estimate extends Component {
   @Override
   @JsonIgnore
   default List<Number> getSamples() {
-    throw new UnsupportedOperationException("Cannot produce list of samples from an estimate parameter");
+    throw new UnsupportedOperationException(
+        "Cannot produce list of samples from an estimate parameter");
   }
 
   @Override
   @JsonIgnore
   default Distribution getDistribution() {
-      throw new UnsupportedOperationException("Cannot produce a distribution from an estimate parameter");
+    throw new UnsupportedOperationException(
+        "Cannot produce a distribution from an estimate parameter");
   }
 }

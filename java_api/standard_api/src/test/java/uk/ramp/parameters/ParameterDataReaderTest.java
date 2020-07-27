@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 import java.io.Reader;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ramp.estimate.Estimate;
 import uk.ramp.distribution.Distribution;
+import uk.ramp.estimate.Estimate;
 import uk.ramp.file.CleanableFileChannel;
 import uk.ramp.samples.Samples;
 import uk.ramp.toml.TomlReader;
@@ -28,14 +28,14 @@ public class ParameterDataReaderTest {
 
   @Test
   public void read() {
-    Components expectedComponents = ImmutableComponents.builder()
-        .putComponents("example-estimate", mockEstimate)
-        .putComponents("example-distribution", mock(Distribution.class))
-        .putComponents("example-samples", mock(Samples.class))
-        .build();
+    Components expectedComponents =
+        ImmutableComponents.builder()
+            .putComponents("example-estimate", mockEstimate)
+            .putComponents("example-distribution", mock(Distribution.class))
+            .putComponents("example-samples", mock(Samples.class))
+            .build();
 
-    when(tomlReader.read(any(Reader.class), any()))
-        .thenReturn(expectedComponents);
+    when(tomlReader.read(any(Reader.class), any())).thenReturn(expectedComponents);
     var dataReader = new ParameterDataReaderImpl(tomlReader);
 
     assertThat(dataReader.read(fileChannel, "example-estimate")).isEqualTo(mockEstimate);
