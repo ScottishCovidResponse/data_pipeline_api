@@ -1,12 +1,12 @@
-plugins {
-    id 'java'
-    id 'jacoco'
-}
-
 buildscript {
     repositories {
         mavenCentral()
     }
+}
+
+plugins {
+    id 'java'
+    id 'jacoco'
 }
 
 jacocoTestReport {
