@@ -46,6 +46,6 @@ public interface Samples extends Component {
   @Override
   @JsonIgnore
   default Distribution getDistribution() {
-    throw new UnsupportedOperationException("Cannot produce an distribution from a samples parameter");
+    throw new UnsupportedOperationException("Cannot produce a distribution from a samples parameter");
   }
 }
