@@ -19,10 +19,42 @@ public class DistributionTest {
           .internalScale(2)
           .build();
 
+  private final MinMax firstMinMax =
+      ImmutableMinMax.builder()
+          .isLowerInclusive(true)
+          .isUpperInclusive(true)
+          .lowerBoundary(0)
+          .upperBoundary(4)
+          .build();
+
+  private final MinMax secondMinMax =
+      ImmutableMinMax.builder()
+          .isLowerInclusive(true)
+          .isUpperInclusive(true)
+          .lowerBoundary(5)
+          .upperBoundary(9)
+          .build();
+
+  private final MinMax thirdMinMax =
+      ImmutableMinMax.builder()
+          .isLowerInclusive(true)
+          .isUpperInclusive(true)
+          .lowerBoundary(10)
+          .upperBoundary(14)
+          .build();
+
+  private final MinMax fourthMinMax =
+      ImmutableMinMax.builder()
+          .isLowerInclusive(true)
+          .isUpperInclusive(true)
+          .lowerBoundary(15)
+          .upperBoundary(20)
+          .build();
+
   private final Distribution categoricalDistribution =
       ImmutableDistribution.builder()
           .internalType(DistributionType.categorical)
-          .bins(List.of(0, 5, 10, 15, 20))
+          .bins(List.of(firstMinMax, secondMinMax, thirdMinMax, fourthMinMax))
           .weights(List.of(0.4, 0.1, 0.1, 0.4))
           .build();
 
