@@ -19,8 +19,8 @@ import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.immutables.value.Value.Check;
-import org.immutables.value.Value.Derived;
 import org.immutables.value.Value.Immutable;
+import org.immutables.value.Value.Lazy;
 import uk.ramp.parameters.Component;
 
 @JsonSerialize
@@ -108,7 +108,7 @@ public interface Distribution extends Component {
   }
 
   @JsonIgnore
-  @Derived
+  @Lazy
   default RealDistribution underlyingDistribution() {
     if (internalType().equals(DistributionType.gamma)) {
       return new GammaDistribution(internalShape().orElseThrow(), internalScale().orElseThrow());
