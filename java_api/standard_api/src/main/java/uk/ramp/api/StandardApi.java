@@ -63,6 +63,12 @@ public class StandardApi {
     }
   }
 
+  public Distribution readDistribution(String dataProduct, String component, long seed) {
+    var dist = readDistribution(dataProduct, component);
+    dist.underlyingDistribution().reseedRandomGenerator(seed);
+    return dist;
+  }
+
   public Distribution readDistribution(String dataProduct, String component) {
     var query =
         ImmutableMetadataItem.builder().dataProduct(dataProduct).component(component).build();
