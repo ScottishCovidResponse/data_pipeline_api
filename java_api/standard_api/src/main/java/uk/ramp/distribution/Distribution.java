@@ -106,7 +106,8 @@ public interface Distribution extends Component {
     return this;
   }
 
-  private RealDistribution underlyingDistribution() {
+  @JsonIgnore
+  default RealDistribution underlyingDistribution() {
     if (internalType().equals(DistributionType.gamma)) {
       return new GammaDistribution(internalShape().orElseThrow(), internalScale().orElseThrow());
     } else if (internalType().equals(DistributionType.exponential)) {
