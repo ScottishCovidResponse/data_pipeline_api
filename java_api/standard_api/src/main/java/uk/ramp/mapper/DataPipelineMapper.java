@@ -35,7 +35,7 @@ public class DataPipelineMapper extends ObjectMapper {
         new SimpleModule()
             .addDeserializer(RandomGenerator.class, new RandomGeneratorDeserializer(rng));
     var rngSerializeModule =
-        new SimpleModule().addSerializer(RandomGenerator.class, new RandomGeneratorSerializer(rng));
+        new SimpleModule().addSerializer(RandomGenerator.class, new RandomGeneratorSerializer());
     var componentsDeserializeModule =
         new SimpleModule().addDeserializer(Components.class, new ComponentsDeserializer(rng));
     var componentsSerializeModule =
