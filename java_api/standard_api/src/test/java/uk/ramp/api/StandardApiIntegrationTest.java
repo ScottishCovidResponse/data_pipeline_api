@@ -39,10 +39,6 @@ public class StandardApiIntegrationTest {
   private Samples samples;
 
   private Distribution distribution;
-  private MinMax firstMinMax;
-  private MinMax secondMinMax;
-  private MinMax thirdMinMax;
-  private MinMax fourthMinMax;
   private Distribution categoricalDistribution;
   private Number estimate = 1.0;
   private String configPath;
@@ -74,7 +70,7 @@ public class StandardApiIntegrationTest {
             .rng(rng)
             .build();
 
-    firstMinMax =
+    MinMax firstMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
@@ -82,7 +78,7 @@ public class StandardApiIntegrationTest {
             .upperBoundary(4)
             .build();
 
-    secondMinMax =
+    MinMax secondMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
@@ -90,7 +86,7 @@ public class StandardApiIntegrationTest {
             .upperBoundary(9)
             .build();
 
-    thirdMinMax =
+    MinMax thirdMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
@@ -98,7 +94,7 @@ public class StandardApiIntegrationTest {
             .upperBoundary(14)
             .build();
 
-    fourthMinMax =
+    MinMax fourthMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)

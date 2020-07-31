@@ -16,16 +16,11 @@ import uk.ramp.distribution.Distribution.DistributionType;
 
 public class DistributionTest {
   private Distribution gammaDistribution;
-  private MinMax firstMinMax;
-  private MinMax secondMinMax;
-  private MinMax thirdMinMax;
-  private MinMax fourthMinMax;
   private Distribution categoricalDistribution;
-  private RandomGenerator rng;
 
   @Before
   public void setUp() {
-    rng = new Well512a();
+    RandomGenerator rng = new Well512a();
 
     gammaDistribution =
         ImmutableDistribution.builder()
@@ -35,7 +30,7 @@ public class DistributionTest {
             .rng(rng)
             .build();
 
-    firstMinMax =
+    MinMax firstMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
@@ -43,7 +38,7 @@ public class DistributionTest {
             .upperBoundary(4)
             .build();
 
-    secondMinMax =
+    MinMax secondMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
@@ -51,7 +46,7 @@ public class DistributionTest {
             .upperBoundary(9)
             .build();
 
-    thirdMinMax =
+    MinMax thirdMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
@@ -59,7 +54,7 @@ public class DistributionTest {
             .upperBoundary(14)
             .build();
 
-    fourthMinMax =
+    MinMax fourthMinMax =
         ImmutableMinMax.builder()
             .isLowerInclusive(true)
             .isUpperInclusive(true)
